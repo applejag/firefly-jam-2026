@@ -16,5 +16,4 @@ Jam theme: firefly
 Made by: team applejuice
 
 - Code: [@applejag](https://github.com/applejag)
-
-- Art: JusJuice
+- Art: [@JusJuice](https://github.com/JusJuice)
