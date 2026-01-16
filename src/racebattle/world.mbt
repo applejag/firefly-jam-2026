@@ -1,6 +1,6 @@
 ///|
 pub(all) struct World {
-  player_system : PlayerSystem
+  players : FixedArray[Player]
   camera : Camera
 } derive(Default)
 
