@@ -143,7 +143,19 @@ firefly farmer
   - super edgy
     - "Destroyer of Worlds"
     - "Egmar the Hell Spawn"
+    - god names (Kratos)
+    - Lord
   - recruit writers to come up with name segments
+- name of game
+  - firefly ranch
+    - collides with thing in idaho
+  - edgy x cute name
+    - firefly death battle
+    - bug battle
+    - firefly fighters
+    - EWFG: Epic Wizard Firefly Gladiators
+    - Throwdown
+- Team applejuice
 
 
 
