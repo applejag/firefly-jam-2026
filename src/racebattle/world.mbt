@@ -1,5 +1,6 @@
 ///|
 pub(all) struct World {
+  field_img : @firefly.Image
   players : FixedArray[Player]
   camera : Camera
   me : @firefly.Peer
@@ -19,8 +20,9 @@ pub fn World::render(self : World) -> Unit {
   @firefly.draw_rect(
     Point::new(0, 0),
     @firefly.Size::new_screen(),
-    @firefly.Style::new_solid(Green),
+    @firefly.Style::new_solid(DarkGray),
   )
+  self.field_img.draw(self.camera.world_point_to_camera_space(Point::new(0, 0)))
   // players
   let mut me : Player? = None
   for player in self.players {

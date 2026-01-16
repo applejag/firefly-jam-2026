@@ -9,4 +9,5 @@ app_name = "Firefly Jam 2026"
 lang = "moon"
 
 [files]
-#thing = { path = "assets/thing.png" }
+firefly = { path = "assets/firefly-green-palettized.png" }
+field = { path = "assets/field.png" }

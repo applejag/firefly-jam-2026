@@ -10,14 +10,18 @@ pub struct Player {
   // manually doing "struct of arrays" optimization,
   // mostly as an experiment to see how tedious it is,
   // but also because MoonBit doesn't allow "#valtype"s in other "#valtype"s
+  sprite_sheet : FixedArray[@firefly.SubImage]
   peer : @firefly.Peer?
   mut pos : Vec2
   mut angle : Angle
 }
 
 ///|
-pub fn Player::new(peer : @firefly.Peer?) -> Player {
-  Player::{ peer, pos: Vec2::default(), angle: Angle::default() }
+pub fn Player::new(
+  sprite_sheet : FixedArray[@firefly.SubImage],
+  peer : @firefly.Peer?,
+) -> Player {
+  Player::{ sprite_sheet, peer, pos: Vec2::default(), angle: Angle::default() }
 }
 
 ///|
@@ -38,12 +42,16 @@ pub fn Player::update(self : Player) -> Unit {
 ///|
 pub fn Player::render(self : Player, world : World) -> Unit {
   let point = world.camera.world_vec2_to_camera_space(self.pos)
-  let style = if Some(world.me) == self.peer {
-    @firefly.Style::new_solid(DarkGreen)
+  if Some(world.me) == self.peer {
+    @firefly.draw_sub_image(self.sprite_sheet[0], point - Point::new(4, 5))
+    @firefly.draw_point(point.x, point.y, Red)
   } else {
-    @firefly.Style::new_solid(Red)
+    @firefly.draw_circle(
+      point - Point::new(2, 2),
+      5,
+      @firefly.Style::new_solid(Red),
+    )
   }
-  @firefly.draw_circle(point - Point::new(1, 1), 3, style)
   // draw arrow of movement direction
   let dir = Vec2::from_angle(self.angle)
   @firefly.draw_line(
