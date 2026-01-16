@@ -1,4 +1,4 @@
-import { "firefly/firefly", "applejag/micromath" }
+import { "firefly/firefly", "applejag/firefly-jam-2026/racebattle" }
 
 options(
   "is-main": true,

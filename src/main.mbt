@@ -1,15 +1,7 @@
 ///|
-using @firefly {
-  type Point,
-  type Angle,
-  type Size,
-  type Style,
-  type LineStyle,
-  type Pad,
-}
-
-///|
-let world : Ref[World] = Ref::new(World::default())
+let racebattle_world : Ref[@racebattle.World] = Ref::new(
+  @racebattle.World::default(),
+)
 
 ///|
 fn main {
@@ -19,15 +11,18 @@ fn main {
 ///|
 pub fn boot() -> Unit {
   let assets = Assets::load()
-  world.val = World::{ ..world.val }
+  racebattle_world.val = @racebattle.World::{
+    ..racebattle_world.val,
+    player_system: @racebattle.PlayerSystem::new(@firefly.get_peers()),
+  }
 }
 
 ///|
 pub fn update() -> Unit {
-  world.val.update()
+  racebattle_world.val.update()
 }
 
 ///|
 pub fn render() -> Unit {
-  world.val.render()
+
 }

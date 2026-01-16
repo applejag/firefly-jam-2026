@@ -1,5 +1,5 @@
 ///|
-fn move_towards(start : Float, end : Float, step : Float) -> Float {
+pub fn move_towards(start : Float, end : Float, step : Float) -> Float {
   if (end - start).abs() <= step {
     end
   } else {

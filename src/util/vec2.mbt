@@ -1,4 +1,7 @@
 ///|
+using @firefly {type Point}
+
+///|
 #valtype
 pub struct Vec2 {
   x : Float
@@ -13,8 +16,23 @@ pub fn Vec2::new(x : Float, y : Float) -> Vec2 {
 
 ///|
 #inline
+pub fn Vec2::from_point(point : Point) -> Vec2 {
+  Vec2::{ x: Float::from_int(point.x), y: Float::from_int(point.y) }
+}
+
+///|
+#inline
 pub fn Vec2::to_point(self : Vec2) -> Point {
   Point::new(self.x.to_int(), self.y.to_int())
+}
+
+///|
+#inline
+pub fn Vec2::from_angle(angle : Angle) -> Vec2 {
+  Vec2::{
+    x: @micromath.cos(angle.to_rad()),
+    y: -@micromath.sin(angle.to_rad()),
+  }
 }
 
 ///|
