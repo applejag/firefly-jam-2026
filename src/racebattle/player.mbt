@@ -27,7 +27,7 @@ pub fn Player::new(
 
 ///|
 pub fn Player::update(self : Player) -> Unit {
-  self.sprite_sheet.update(30)
+  self.sprite_sheet.update()
   if self.peer is Some(peer) {
     let pad_maybe = @firefly.read_pad(peer~)
     if pad_maybe is Some(pad) {
