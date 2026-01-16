@@ -1,7 +1,4 @@
 ///|
-using @firefly {type Point}
-
-///|
 #valtype
 pub struct Vec2 {
   x : Float
