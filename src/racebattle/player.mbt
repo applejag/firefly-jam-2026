@@ -3,7 +3,7 @@
 let rotation : Angle = Angle::from_deg(180.0 / 60.0)
 
 ///|
-const MOVE_SPEED : Float = 5
+const MOVE_SPEED : Float = 0.5
 
 ///|
 pub struct Player {
@@ -22,19 +22,17 @@ pub fn Player::new(peer : @firefly.Peer?) -> Player {
 
 ///|
 pub fn Player::update(self : Player) -> Unit {
-  @firefly.log_debug(@encoding/utf8.encode("\{self.peer}: player update"))
-  guard self.peer is Some(peer) else { return }
-  @firefly.log_debug("peer is some")
-  let pad_maybe = @firefly.read_pad(peer~)
-  guard pad_maybe is Some(pad) else { return }
-  @firefly.log_debug("pad is some")
-  guard pad.x != 0 && pad.y != 0 else { return }
-  @firefly.log_debug("pad not zero")
-  let new_angle = @util.rotate_toward(self.angle, pad.azimuth(), rotation)
-  let dir = Vec2::from_angle(new_angle).scale(MOVE_SPEED)
-  self.pos = self.pos + dir
-  self.angle = new_angle
-  @firefly.log_debug(@encoding/utf8.encode("\{peer}: Pad(\{pad})"))
+  if self.peer is Some(peer) {
+    let pad_maybe = @firefly.read_pad(peer~)
+    if pad_maybe is Some(pad) {
+      if pad.x != 0 && pad.y != 0 {
+        let new_angle = @util.rotate_toward(self.angle, pad.azimuth(), rotation)
+        self.angle = new_angle
+      }
+    }
+  }
+  let dir = Vec2::from_angle(self.angle).scale(MOVE_SPEED)
+  self.pos = self.pos + dir.scale(MOVE_SPEED)
 }
 
 ///|
@@ -45,5 +43,12 @@ pub fn Player::render(self : Player, world : World) -> Unit {
   } else {
     @firefly.Style::new_solid(Red)
   }
-  @firefly.draw_circle(point, 3, style)
+  @firefly.draw_circle(point - Point::new(1, 1), 3, style)
+  // draw arrow of movement direction
+  let dir = Vec2::from_angle(self.angle)
+  @firefly.draw_line(
+    point + dir.scale(5).to_point(),
+    point + dir.scale(8).to_point(),
+    @firefly.LineStyle::new(Black),
+  )
 }
