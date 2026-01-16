@@ -1,6 +1,4 @@
 ///|
-// TODO: Report bug to MoonBit team that #valtype causes compiler bug here
-#valtype
 pub struct SpriteSheet {
   sprites : FixedArray[@firefly.SubImage]
   mut index : Int
