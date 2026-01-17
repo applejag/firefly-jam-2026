@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	Tau      = math.Pi * 2
-	RadToDeg = 360 / Tau
-	DegToRad = Tau / 360
+	Tau         = math.Pi * 2
+	RadToDeg    = 360 / Tau
+	DegToRad    = Tau / 360
+	cmp_epsilon = 0.00001
 )
 
 // Returns the difference between the two angles, in the range of `[-PI, +PI]`.
