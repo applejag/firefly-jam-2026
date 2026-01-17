@@ -191,3 +191,11 @@ flowchart TD
     Home <---> Battle
     Home <---> Breeding
 ```
+
+## Mockups
+
+![](2026-01-17-17-33-02-Frog_shop_mockup.png)
+
+![](2026-01-17-17-33-24-insectarium_mockup.png)
+
+![](2026-01-17-17-33-31-Menu_mockup.png)
