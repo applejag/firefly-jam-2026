@@ -6,6 +6,8 @@ SPDX-License-Identifier: CC0-1.0
 
 # Firefly Jam submission
 
+[![NO AI](https://raw.githubusercontent.com/nuxy/no-ai-badge/master/badge.svg)](https://github.com/nuxy/no-ai-badge)
+
 Game written in [MoonBit](https://www.moonbitlang.com/)
 for the [Firefly Zero Jam #1](https://itch.io/jam/firefly-jam).
 
