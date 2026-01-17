@@ -1,6 +1,10 @@
 package shop
 
-import "github.com/firefly-zero/firefly-go/firefly"
+import (
+	"firefly-jam-2026/assets"
+
+	"github.com/firefly-zero/firefly-go/firefly"
+)
 
 type Scene struct{}
 
@@ -11,5 +15,5 @@ func (s *Scene) Update() {
 }
 
 func (s *Scene) Render() {
-	firefly.ClearScreen(firefly.ColorBlue)
+	assets.Shop.Draw(firefly.P(0, 0))
 }

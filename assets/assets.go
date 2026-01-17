@@ -7,34 +7,40 @@ import (
 )
 
 var (
-	fieldBuf                [19213]byte
-	Field                   firefly.Image
-	racingMapBuf            [192013]byte
-	RacingMap               firefly.Image
-	racingMapTreesBuf       [192013]byte
-	RacingMapTrees          firefly.Image
-	racingMapTreetopsBuf    [192013]byte
-	RacingMapTreetops       firefly.Image
-	racingMapCloudsBuf      [32207]byte
-	RacingMapClouds         util.SpriteSheet
-	racingMapMaskBuf        [96007]byte
-	RacingMapMask           util.ExtImage
-	fireflySheetBuf         [333]byte
-	FireflySheet            util.SpriteSheet
-	fireflySheetRevBuf      [333]byte
-	FireflySheetRev         util.SpriteSheet
+	fieldBuf [19213]byte
+	Field    firefly.Image
+
+	racingMapBuf         [192013]byte
+	RacingMap            firefly.Image
+	racingMapTreesBuf    [192013]byte
+	RacingMapTrees       firefly.Image
+	racingMapTreetopsBuf [192013]byte
+	RacingMapTreetops    firefly.Image
+	racingMapCloudsBuf   [32207]byte
+	RacingMapClouds      util.SpriteSheet
+	racingMapMaskBuf     [96007]byte
+	RacingMapMask        util.ExtImage
+	fireflySheetBuf      [333]byte
+	FireflySheet         util.SpriteSheet
+	fireflySheetRevBuf   [333]byte
+	FireflySheetRev      util.SpriteSheet
+
 	titleScreenBuf          [38413]byte
 	TitleScreen             util.SpriteSheet
 	titleButtonHighlightBuf [702]byte
 	TitleButtonHighlight    util.SpriteSheet
 	titleNoContinueBuf      [423]byte
 	TitleNoContinue         firefly.Image
-	transitionSheetBuf      [134]byte
-	TransitionSheet         util.SpriteSheet
+
+	shopBuf [19213]byte
+	Shop    firefly.Image
+
+	transitionSheetBuf [134]byte
+	TransitionSheet    util.SpriteSheet
 )
 
 func Load() {
-	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("title-no-continue")))
+	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("shop")))
 	Field = firefly.LoadImage("field", fieldBuf[:])
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
@@ -46,5 +52,6 @@ func Load() {
 	TitleScreen = util.SplitImageByCount(firefly.LoadImage("title-screen", titleScreenBuf[:]), firefly.S(2, 1))
 	TitleButtonHighlight = util.SplitImageByCount(firefly.LoadImage("title-button-hi", titleButtonHighlightBuf[:]), firefly.S(2, 1))
 	TitleNoContinue = firefly.LoadImage("title-no-continue", titleNoContinueBuf[:])
+	Shop = firefly.LoadImage("shop", shopBuf[:])
 	TransitionSheet = util.SplitImageByCount(firefly.LoadImage("transition", transitionSheetBuf[:]), firefly.S(4, 4))
 }
