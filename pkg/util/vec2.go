@@ -1,6 +1,8 @@
 package util
 
 import (
+	"math"
+
 	"github.com/firefly-zero/firefly-go/firefly"
 	"github.com/orsinium-labs/tinymath"
 )
@@ -59,4 +61,9 @@ func (v Vec2) Radius() float32 {
 
 func (v Vec2) RadiusSquared() float32 {
 	return v.X*v.X + v.Y*v.Y
+}
+
+func (v Vec2) Azimuth() firefly.Angle {
+	r := math.Pi / 2. * tinymath.Atan2Norm(-v.Y, v.X)
+	return firefly.Radians(r)
 }

@@ -114,28 +114,41 @@ func (f *Firefly) Draw(world *World) {
 	point := world.Camera.WorldVec2ToCameraSpace(f.Pos)
 	// Draw shadow
 	firefly.DrawCircle(point.Add(firefly.P(-2, 2)), 5, firefly.Solid(firefly.ColorDarkGray))
-	// Draw line to next path checkpoint
-	firefly.DrawLine(
-		point,
-		world.Camera.WorldVec2ToCameraSpace(f.PathTracker.PeekCurrent()),
-		firefly.L(firefly.ColorRed, 1))
-	// Draw arrow of movement direction
-	dir := util.AngleToVec2(f.Angle)
-	firefly.DrawLine(
-		point.Add(dir.Scale(6).Point()),
-		point.Add(dir.Scale(9).Point()),
-		firefly.L(firefly.ColorBlack, 1))
-	// Draw sprite
-	if f.IsPlayer {
-		isLookingLeft := tinymath.Abs(util.AngleDifference(firefly.Radians(math.Pi), f.Angle).Radians()) < math.Pi/2
-		spritePos := point.Sub(firefly.P(4, 5))
-		if isLookingLeft {
-			f.SpriteSheetRev.Draw(spritePos)
-		} else {
-			f.SpriteSheet.Draw(spritePos)
-		}
-	} else {
-		// not player, for now just draw debug blob
-		firefly.DrawCircle(point.Sub(firefly.P(2, 2)), 5, firefly.Solid(firefly.ColorRed))
+	if f.IsPlayer && f.Peer == world.Me {
+		// Draw arrow to direction you should move in
+		targetPoint := f.PathTracker.PeekNext().Add(f.PathTracker.PeekCurrent()).Scale(0.5)
+		targetAngle := targetPoint.Sub(f.Pos).Azimuth()
+		targetDir := util.AngleToVec2(targetAngle)
+		drawArrow(
+			point.Add(targetDir.Scale(10).Point()),
+			targetAngle,
+			7,
+			firefly.L(firefly.ColorDarkGreen, 1))
 	}
+	// Draw sprite
+	isLookingLeft := tinymath.Abs(util.AngleDifference(firefly.Radians(math.Pi), f.Angle).Radians()) < math.Pi/2
+	spritePos := point.Sub(firefly.P(4, 5))
+	if isLookingLeft {
+		f.SpriteSheetRev.Draw(spritePos)
+	} else {
+		f.SpriteSheet.Draw(spritePos)
+	}
+}
+
+func drawArrow(from firefly.Point, angle firefly.Angle, length int, lineStyle firefly.LineStyle) {
+	fromV := util.PointToVec2(from)
+	toV := fromV.Add(util.AngleToVec2(angle).Scale(float32(length)))
+	to := toV.Point()
+	firefly.DrawLine(
+		from,
+		to,
+		lineStyle)
+	firefly.DrawLine(
+		to,
+		toV.Add(util.AngleToVec2(angle.Add(firefly.Degrees(145))).Scale(3)).Point(),
+		lineStyle)
+	firefly.DrawLine(
+		to,
+		toV.Add(util.AngleToVec2(angle.Add(firefly.Degrees(-145))).Scale(3)).Point(),
+		lineStyle)
 }
