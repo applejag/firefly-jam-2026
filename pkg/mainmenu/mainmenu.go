@@ -18,18 +18,19 @@ type Menu struct {
 type Button byte
 
 const (
-	ButtonContinue Button = iota
+	ButtonNone Button = iota
+	ButtonContinue
 	ButtonNewGame
 )
 
-func (b Button) HighlightPosition() firefly.Point {
+func (b Button) HighlightPosition() (firefly.Point, bool) {
 	switch b {
 	case ButtonContinue:
-		return firefly.P(72, 63)
+		return firefly.P(72, 63), true
 	case ButtonNewGame:
-		return firefly.P(72, 81)
+		return firefly.P(72, 81), true
 	default:
-		panic("unexpected mainmenu.Button")
+		return firefly.Point{}, false
 	}
 }
 
@@ -47,10 +48,12 @@ func (m *Menu) Update() {
 	pad, ok := firefly.ReadPad(firefly.Combined)
 	if ok {
 		justPressed := pad.DPad4().JustPressed(m.lastInput.DPad4())
-		switch justPressed {
-		case firefly.DPad4Up:
+		switch {
+		case m.Button == ButtonNone:
 			m.Button = ButtonContinue
-		case firefly.DPad4Down:
+		case justPressed == firefly.DPad4Up:
+			m.Button = ButtonContinue
+		case justPressed == firefly.DPad4Down:
 			m.Button = ButtonNewGame
 		}
 	}
@@ -63,6 +66,8 @@ func (m *Menu) Update() {
 
 func (m *Menu) Render() {
 	m.TitleScreen.Draw(firefly.P(0, 0))
-	m.ButtonHighlight.Draw(m.Button.HighlightPosition())
+	if pos, ok := m.Button.HighlightPosition(); ok {
+		m.ButtonHighlight.Draw(pos)
+	}
 	m.Transition.Draw()
 }
