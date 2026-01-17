@@ -3,7 +3,7 @@ package main
 import (
 	"firefly-jam-2026/assets"
 	"firefly-jam-2026/pkg/mainmenu"
-	"firefly-jam-2026/pkg/racebattle"
+	"firefly-jam-2026/pkg/scenes/racebattle"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
