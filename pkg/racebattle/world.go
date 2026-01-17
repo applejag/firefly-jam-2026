@@ -9,17 +9,33 @@ import (
 
 var path = []util.Vec2{
 	util.V(68, 331),
-	util.V(93, 368),
-	util.V(107, 429),
-	util.V(207, 448),
-	util.V(240, 437),
-	util.V(284, 351),
-	util.V(309, 337),
-	util.V(384, 343),
-	util.V(442, 278),
-	util.V(429, 254),
-	util.V(374, 216),
-	util.V(310, 175),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
+	// util.V(),
 }
 
 type World struct {
@@ -39,7 +55,9 @@ func (w *World) Update() {
 func (w *World) Render() {
 	// Background
 	firefly.ClearScreen(firefly.ColorDarkGray)
-	assets.RacingMap.Draw(w.Camera.WorldPointToCameraSpace(firefly.P(0, 0)))
+	mapPos := w.Camera.WorldPointToCameraSpace(firefly.P(0, 0))
+	assets.RacingMap.Draw(mapPos)
+	assets.RacingMapTrees.Draw(mapPos)
 	// Players
 	var me *Firefly
 	for i, player := range w.Players {
@@ -49,8 +67,10 @@ func (w *World) Render() {
 			player.Draw(w)
 		}
 	}
-	// Draw my player last (on top)
+	// Draw my player last
 	if me != nil {
 		me.Draw(w)
 	}
+	// Draw tree tops layer on top
+	assets.RacingMapTreetops.Draw(mapPos)
 }

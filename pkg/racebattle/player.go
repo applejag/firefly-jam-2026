@@ -3,7 +3,6 @@ package racebattle
 import (
 	"firefly-jam-2026/assets"
 	"firefly-jam-2026/pkg/util"
-	"fmt"
 	"math"
 
 	"github.com/firefly-zero/firefly-go/firefly"
@@ -100,9 +99,7 @@ func (f *Firefly) UpdateSpeedFactor(target float32) {
 
 func (f *Firefly) UpdateAngle(target firefly.Angle) {
 	rotationSpeed := util.Lerp(RotationSpeedWhenStillRad, RotationSpeedWhenMovingRad, f.SpeedFactor)
-	res := util.RotateTowards(f.Angle, target, firefly.Radians(rotationSpeed))
-	firefly.LogDebug(fmt.Sprintf("rotate_towards(%d°, %d°, %d°) = %d°", int(f.Angle.Degrees()), int(target.Degrees()), int(firefly.Radians(rotationSpeed).Degrees()), int(res.Degrees())))
-	f.Angle = res
+	f.Angle = util.RotateTowards(f.Angle, target, firefly.Radians(rotationSpeed))
 }
 
 func (f *Firefly) Draw(world *World) {
