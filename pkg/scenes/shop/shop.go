@@ -67,7 +67,7 @@ func (s *Shop) Render() {
 		item.Icon.Draw(pos)
 		textWidth := len(item.priceStr) * assets.FontPico8_4x6.CharWidth()
 		if item.Quantity > 0 {
-			assets.FontPico8_4x6.Draw(item.priceStr, pos.Add(firefly.P(offset.W/2-textWidth/2, offset.H-6)), firefly.ColorBlack)
+			assets.FontPico8_4x6.Draw(item.priceStr, pos.Add(firefly.P(offset.W/2-textWidth/2, offset.H-6)), firefly.ColorYellow)
 		}
 		if s.Selected == i {
 			s.selectedAnim.Draw(pos)
