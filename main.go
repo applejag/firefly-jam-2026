@@ -2,8 +2,7 @@ package main
 
 import (
 	"firefly-jam-2026/assets"
-	"firefly-jam-2026/pkg/mainmenu"
-	"firefly-jam-2026/pkg/scenes/racebattle"
+	"firefly-jam-2026/pkg/game"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -14,25 +13,17 @@ func init() {
 	firefly.Render = render
 }
 
-var world = racebattle.World{
-	Camera: racebattle.Camera{},
-}
-
-var menu = mainmenu.Menu{}
+var scenemanager = game.SceneManager{}
 
 func boot() {
 	assets.Load()
-
-	world.Boot()
-	menu.Boot()
+	scenemanager.Boot()
 }
 
 func update() {
-	// world.Update()
-	menu.Update()
+	scenemanager.Update()
 }
 
 func render() {
-	// world.Render()
-	menu.Render()
+	scenemanager.Render()
 }

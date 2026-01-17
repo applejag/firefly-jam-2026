@@ -34,50 +34,49 @@ var path = []util.Vec2{
 	util.V(47, 372),
 }
 
-type World struct {
+type Scene struct {
 	AnimatedClouds util.AnimatedSheet
 	Players        []Firefly
 	Camera         Camera
 	Me             firefly.Peer
-	// path Path
 }
 
-func (w *World) Boot() {
-	w.AnimatedClouds = assets.RacingMapClouds.Animated(2)
-	w.Me = firefly.GetMe()
-	w.Players = []Firefly{
-		NewFireflyPlayer(w.Me, util.V(41, 390), firefly.Degrees(270)),
+func (s *Scene) Boot() {
+	s.AnimatedClouds = assets.RacingMapClouds.Animated(2)
+	s.Me = firefly.GetMe()
+	s.Players = []Firefly{
+		NewFireflyPlayer(s.Me, util.V(41, 390), firefly.Degrees(270)),
 	}
 }
 
-func (w *World) Update() {
-	for i := range w.Players {
-		w.Players[i].Update()
+func (s *Scene) Update() {
+	for i := range s.Players {
+		s.Players[i].Update()
 	}
-	w.Camera.Update(w)
-	w.AnimatedClouds.Update()
+	s.Camera.Update(s)
+	s.AnimatedClouds.Update()
 }
 
-func (w *World) Render() {
+func (s *Scene) Render() {
 	// Background
 	firefly.ClearScreen(firefly.ColorDarkGray)
-	mapPos := w.Camera.WorldPointToCameraSpace(firefly.P(0, 0))
+	mapPos := s.Camera.WorldPointToCameraSpace(firefly.P(0, 0))
 	assets.RacingMap.Draw(mapPos)
 	assets.RacingMapTrees.Draw(mapPos)
 	// Players
 	var me *Firefly
-	for i, player := range w.Players {
-		if player.Peer == w.Me {
-			me = &w.Players[i]
+	for i, player := range s.Players {
+		if player.Peer == s.Me {
+			me = &s.Players[i]
 		} else {
-			player.Draw(w)
+			player.Draw(s)
 		}
 	}
 	// Draw my player last
 	if me != nil {
-		me.Draw(w)
+		me.Draw(s)
 	}
 	// Draw tree tops layer on top
 	assets.RacingMapTreetops.Draw(mapPos)
-	w.AnimatedClouds.Draw(mapPos)
+	s.AnimatedClouds.Draw(mapPos)
 }

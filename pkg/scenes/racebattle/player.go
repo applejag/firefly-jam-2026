@@ -110,7 +110,7 @@ func (f *Firefly) UpdateAngle(target firefly.Angle) {
 	f.Angle = util.RotateTowards(f.Angle, target, firefly.Radians(rotationSpeed))
 }
 
-func (f *Firefly) Draw(world *World) {
+func (f *Firefly) Draw(world *Scene) {
 	point := world.Camera.WorldVec2ToCameraSpace(f.Pos)
 	// Draw shadow
 	firefly.DrawCircle(point.Add(firefly.P(-2, 2)), 5, firefly.Solid(firefly.ColorDarkGray))
