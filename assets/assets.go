@@ -15,6 +15,8 @@ var (
 	RacingMapTrees       firefly.Image
 	racingMapTreetopsBuf [192013]byte
 	RacingMapTreetops    firefly.Image
+	racingMapCloudsBuf   [384013]byte
+	RacingMapClouds      util.SpriteSheet
 	fireflySheetBuf      [333]byte
 	FireflySheet         util.SpriteSheet
 	fireflySheetRevBuf   [333]byte
@@ -26,6 +28,7 @@ func Load() {
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
 	RacingMapTreetops = firefly.LoadImage("racing-map-treetops", racingMapTreetopsBuf[:])
+	RacingMapClouds = util.SplitImageByCount(firefly.LoadImage("racing-map-clouds", racingMapCloudsBuf[:]), firefly.S(2, 1))
 	FireflySheet = util.SplitImageByCount(firefly.LoadImage("firefly", fireflySheetBuf[:]), firefly.S(7, 1))
 	FireflySheetRev = util.SplitImageByCount(firefly.LoadImage("firefly-rev", fireflySheetRevBuf[:]), firefly.S(7, 1))
 }

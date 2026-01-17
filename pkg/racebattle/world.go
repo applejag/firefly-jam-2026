@@ -35,9 +35,10 @@ var path = []util.Vec2{
 }
 
 type World struct {
-	Players []Firefly
-	Camera  Camera
-	Me      firefly.Peer
+	AnimatedClouds util.AnimatedSheet
+	Players        []Firefly
+	Camera         Camera
+	Me             firefly.Peer
 	// path Path
 }
 
@@ -46,6 +47,7 @@ func (w *World) Update() {
 		w.Players[i].Update()
 	}
 	w.Camera.Update(w)
+	w.AnimatedClouds.Update()
 }
 
 func (w *World) Render() {
@@ -69,4 +71,5 @@ func (w *World) Render() {
 	}
 	// Draw tree tops layer on top
 	assets.RacingMapTreetops.Draw(mapPos)
+	w.AnimatedClouds.Draw(mapPos)
 }

@@ -21,6 +21,7 @@ var world = racebattle.World{
 func boot() {
 	assets.Load()
 
+	world.AnimatedClouds = assets.RacingMapClouds.Animated(2)
 	world.Me = firefly.GetMe()
 	world.Players = []racebattle.Firefly{
 		racebattle.NewFireflyPlayer(world.Me, util.V(41, 390), firefly.Degrees(270)),
