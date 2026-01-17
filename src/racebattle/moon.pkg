@@ -1,5 +1,0 @@
-import {
-  "firefly/firefly",
-  "applejag/micromath",
-  "applejag/firefly-jam-2026/util",
-}

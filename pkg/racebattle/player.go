@@ -63,7 +63,6 @@ func (f *Firefly) Update() {
 	f.SpriteSheet.Update()
 	f.SpriteSheetRev.Update()
 	if f.IsPlayer {
-		firefly.LogDebug("player update")
 		f.UpdatePlayerInput()
 	}
 	dir := util.AngleToVec2(f.Angle)
