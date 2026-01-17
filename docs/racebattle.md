@@ -16,7 +16,10 @@ Mockup:
   
   - change in direction and speed is not instant. Intentionally floaty controls
 
-- 
+- target max speed goes from 0% to 100% depending on how far from the center the touch is on the touchpad, using formula `min(1.0, pad.radius()/1000*1.2)` (pad radius goes from 0-1000)
+  ![](2026-01-17-01-29-55-image.png)
+
+- the slower the firefly is moving, the tighter it can turn
 
 ## Obstacles
 
