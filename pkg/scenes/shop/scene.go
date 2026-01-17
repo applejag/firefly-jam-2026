@@ -15,5 +15,8 @@ func (s *Scene) Update() {
 }
 
 func (s *Scene) Render() {
-	assets.Shop.Draw(firefly.P(0, 0))
+	assets.Shop[1].Draw(firefly.P(0, 0))
+
+	// fits ~17 chars per line, and max 2 lines
+	assets.FontEG_6x9.Draw("oy m8, u here 4\nsum foirefloies??", firefly.P(12, 38), firefly.ColorBlack)
 }

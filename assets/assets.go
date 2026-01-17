@@ -32,15 +32,18 @@ var (
 	titleNoContinueBuf      [423]byte
 	TitleNoContinue         firefly.Image
 
-	shopBuf [19213]byte
-	Shop    firefly.Image
+	shopBuf [38413]byte
+	Shop    util.SpriteSheet
 
 	transitionSheetBuf [134]byte
 	TransitionSheet    util.SpriteSheet
+
+	fontEG_6x9Buf [655]byte
+	FontEG_6x9    firefly.Font
 )
 
 func Load() {
-	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("shop")))
+	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("eg_6x9")))
 	Field = firefly.LoadImage("field", fieldBuf[:])
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
@@ -52,6 +55,7 @@ func Load() {
 	TitleScreen = util.SplitImageByCount(firefly.LoadImage("title-screen", titleScreenBuf[:]), firefly.S(2, 1))
 	TitleButtonHighlight = util.SplitImageByCount(firefly.LoadImage("title-button-hi", titleButtonHighlightBuf[:]), firefly.S(2, 1))
 	TitleNoContinue = firefly.LoadImage("title-no-continue", titleNoContinueBuf[:])
-	Shop = firefly.LoadImage("shop", shopBuf[:])
+	Shop = util.SplitImageByCount(firefly.LoadImage("shop", shopBuf[:]), firefly.S(1, 2))
 	TransitionSheet = util.SplitImageByCount(firefly.LoadImage("transition", transitionSheetBuf[:]), firefly.S(4, 4))
+	FontEG_6x9 = firefly.LoadFont("eg_6x9", fontEG_6x9Buf[:])
 }

@@ -34,6 +34,7 @@ func (s *SceneManager) SwitchScene(scene scenes.Scene) {
 }
 
 func (s *SceneManager) Boot() {
+	s.NextScene = s.CurrentScene
 	// register as global scene switcher
 	scenes.SwitchScene = s.SwitchScene
 

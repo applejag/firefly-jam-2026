@@ -22,3 +22,5 @@ title-button-hi = { path = "assets/Title button highlight.png" }
 title-no-continue = { path = "assets/Title no continue.png" }
 transition = { path = "assets/transition.png" }
 shop = { path = "assets/Frog_shop_mockup.png" }
+
+eg_6x9 = { path = "assets/fonts/eg_6x9.fff" }

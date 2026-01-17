@@ -3,6 +3,7 @@ package main
 import (
 	"firefly-jam-2026/assets"
 	"firefly-jam-2026/pkg/game"
+	"firefly-jam-2026/pkg/scenes"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -17,6 +18,8 @@ var scenemanager = game.SceneManager{}
 
 func boot() {
 	assets.Load()
+
+	scenemanager.CurrentScene = scenes.Shop
 	scenemanager.Boot()
 }
 
