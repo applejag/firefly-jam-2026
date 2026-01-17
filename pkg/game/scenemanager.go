@@ -24,6 +24,8 @@ type SceneManager struct {
 	Insectarium insectarium.Scene
 	Shop        shop.Scene
 	Field       field.Scene
+
+	UI UI
 }
 
 // SwitchScene implements [scenes.SceneSwitcher].
@@ -104,6 +106,10 @@ func (s *SceneManager) Render() {
 		s.Shop.Render()
 	}
 	s.Transition.Draw()
+
+	if scene != scenes.MainMenu {
+		s.UI.Render()
+	}
 }
 
 func (s *SceneManager) onSceneSwitch(scene scenes.Scene) {
