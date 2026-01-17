@@ -40,6 +40,8 @@ var (
 	ShopProps      util.SpriteSheet
 	shopChatboxBuf [3073]byte
 	ShopChatbox    firefly.Image
+	shopItemBuf    [6061]byte
+	ShopItem       util.SpriteSheet
 
 	transitionSheetBuf [134]byte
 	TransitionSheet    util.SpriteSheet
@@ -49,7 +51,7 @@ var (
 )
 
 func Load() {
-	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("shop-props")))
+	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("shop-item")))
 	Field = firefly.LoadImage("field", fieldBuf[:])
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
@@ -65,6 +67,7 @@ func Load() {
 	ShopFrog = util.SplitImageByCount(firefly.LoadImage("shop-frog", shopFrogBuf[:]), firefly.S(3, 2))
 	ShopProps = util.SplitImageByCount(firefly.LoadImage("shop-props", shopPropsBuf[:]), firefly.S(3, 2))
 	ShopChatbox = firefly.LoadImage("shop-chatbox", shopChatboxBuf[:])
+	ShopItem = util.SplitImageByCount(firefly.LoadImage("shop-item", shopItemBuf[:]), firefly.S(4, 3))
 	TransitionSheet = util.SplitImageByCount(firefly.LoadImage("transition", transitionSheetBuf[:]), firefly.S(4, 4))
 	FontEG_6x9 = firefly.LoadFont("eg_6x9", fontEG_6x9Buf[:])
 }

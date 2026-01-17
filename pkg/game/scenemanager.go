@@ -45,6 +45,15 @@ func (s *SceneManager) Boot() {
 	s.MainMenu.Boot()
 	s.RaceBattle.Boot()
 	s.Shop.Boot()
+
+	s.Shop.Shop.AddItem(0, 1, assets.ShopItem[6])
+	s.Shop.Shop.AddItem(0, -1, assets.ShopItem[7])
+	s.Shop.Shop.AddItem(0, -1, assets.ShopItem[7])
+	s.Shop.Shop.AddItem(0, -1, assets.ShopItem[7])
+	s.Shop.Shop.AddItem(0, -1, assets.ShopItem[7])
+	s.Shop.Shop.AddItem(0, -1, assets.ShopItem[7])
+	s.Shop.Shop.AddItem(0, -1, assets.ShopItem[7])
+	s.Shop.Shop.AddItem(0, -1, assets.ShopItem[7])
 }
 
 func (s *SceneManager) Update() {
