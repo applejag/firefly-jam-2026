@@ -2,6 +2,7 @@ package mainmenu
 
 import (
 	"firefly-jam-2026/assets"
+	"firefly-jam-2026/pkg/scenes"
 	"firefly-jam-2026/pkg/util"
 
 	"github.com/firefly-zero/firefly-go/firefly"
@@ -10,9 +11,9 @@ import (
 type Menu struct {
 	TitleScreen     util.AnimatedSheet
 	ButtonHighlight util.AnimatedSheet
-	Transition      util.Transition
 	Button          Button
-	lastInput       firefly.Pad
+	padOld          firefly.Pad
+	buttonsOld      firefly.Buttons
 }
 
 type Button byte
@@ -37,17 +38,15 @@ func (b Button) HighlightPosition() (firefly.Point, bool) {
 func (m *Menu) Boot() {
 	m.TitleScreen = assets.TitleScreen.Animated(2)
 	m.ButtonHighlight = assets.TitleButtonHighlight.Animated(2)
-	m.Transition = util.NewTransition(assets.TransitionSheet.Animated(10), firefly.S(8, 8))
 }
 
 func (m *Menu) Update() {
 	m.TitleScreen.Update()
 	m.ButtonHighlight.Update()
-	m.Transition.Update()
 
-	pad, ok := firefly.ReadPad(firefly.Combined)
+	pad, ok := firefly.ReadPad(firefly.GetMe())
 	if ok {
-		justPressed := pad.DPad4().JustPressed(m.lastInput.DPad4())
+		justPressed := pad.DPad4().JustPressed(m.padOld.DPad4())
 		switch {
 		case m.Button == ButtonNone:
 			m.Button = ButtonContinue
@@ -57,11 +56,16 @@ func (m *Menu) Update() {
 			m.Button = ButtonNewGame
 		}
 	}
-	m.lastInput = pad
+	m.padOld = pad
 
-	if firefly.ReadButtons(firefly.Combined).S {
-		m.Transition.Play()
+	buttons := firefly.ReadButtons(firefly.GetMe())
+	if buttons.JustPressed(m.buttonsOld).S {
+		switch m.Button {
+		case ButtonNewGame:
+			scenes.SwitchScene(scenes.Shop)
+		}
 	}
+	m.buttonsOld = buttons
 }
 
 func (m *Menu) Render() {
@@ -70,5 +74,4 @@ func (m *Menu) Render() {
 	if pos, ok := m.Button.HighlightPosition(); ok {
 		m.ButtonHighlight.Draw(pos)
 	}
-	m.Transition.Draw()
 }

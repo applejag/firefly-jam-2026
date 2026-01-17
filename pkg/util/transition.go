@@ -23,3 +23,7 @@ func (t *Transition) Draw() {
 		}
 	}
 }
+
+func (t *Transition) IsPastHalf() bool {
+	return t.index >= len(t.sprites)/2
+}

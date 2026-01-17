@@ -25,9 +25,9 @@ func (c Camera) WorldPointToCameraSpace(pos firefly.Point) firefly.Point {
 	return firefly.P(pos.X-rhs.X, pos.Y-rhs.Y)
 }
 
-func (c *Camera) Update(world *Scene) {
-	for _, player := range world.Players {
-		if world.Me == player.Peer {
+func (c *Camera) Update(scene *Scene) {
+	for _, player := range scene.Players {
+		if scene.Me == player.Peer {
 			c.pos = player.Pos.Sub(util.V(ScreenWidthHalf, ScreenHeightHalf))
 
 			c.pos.X = util.Clamp(c.pos.X, 0, float32(assets.RacingMap.Width()-firefly.Width))

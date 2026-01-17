@@ -47,6 +47,7 @@ func (s *Scene) Boot() {
 	s.Players = []Firefly{
 		NewFireflyPlayer(s.Me, util.V(41, 390), firefly.Degrees(270)),
 	}
+	s.Camera.Update(s)
 }
 
 func (s *Scene) Update() {

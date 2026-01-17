@@ -1,14 +1,22 @@
 package game
 
 import (
+	"firefly-jam-2026/assets"
+	"firefly-jam-2026/pkg/scenes"
 	"firefly-jam-2026/pkg/scenes/insectarium"
 	"firefly-jam-2026/pkg/scenes/mainmenu"
 	"firefly-jam-2026/pkg/scenes/racebattle"
 	"firefly-jam-2026/pkg/scenes/shop"
+	"firefly-jam-2026/pkg/util"
+	"fmt"
+
+	"github.com/firefly-zero/firefly-go/firefly"
 )
 
 type SceneManager struct {
-	CurrentScene Scene
+	CurrentScene scenes.Scene
+	NextScene    scenes.Scene
+	Transition   util.Transition
 
 	MainMenu    mainmenu.Menu
 	RaceBattle  racebattle.Scene
@@ -16,16 +24,19 @@ type SceneManager struct {
 	Shop        shop.Scene
 }
 
-type Scene byte
-
-const (
-	SceneMainMenu Scene = iota
-	SceneInsectarium
-	SceneShop
-	SceneRaceBattle
-)
+// SwitchScene implements [scenes.SceneSwitcher].
+func (s *SceneManager) SwitchScene(scene scenes.Scene) {
+	s.NextScene = scene
+	s.Transition.Play()
+	firefly.LogDebug(fmt.Sprintf("switching scene to %q", scene))
+}
 
 func (s *SceneManager) Boot() {
+	// register as global scene switcher
+	scenes.SwitchScene = s.SwitchScene
+
+	s.Transition = util.NewTransition(assets.TransitionSheet.Animated(12), firefly.S(8, 8))
+
 	s.MainMenu.Boot()
 	s.RaceBattle.Boot()
 	s.Insectarium.Boot()
@@ -33,27 +44,38 @@ func (s *SceneManager) Boot() {
 }
 
 func (s *SceneManager) Update() {
-	switch s.CurrentScene {
-	case SceneInsectarium:
-		s.Insectarium.Update()
-	case SceneMainMenu:
-		s.MainMenu.Update()
-	case SceneRaceBattle:
-		s.RaceBattle.Update()
-	case SceneShop:
-		s.Shop.Update()
+	if s.NextScene == s.CurrentScene {
+		switch s.CurrentScene {
+		case scenes.Insectarium:
+			s.Insectarium.Update()
+		case scenes.MainMenu:
+			s.MainMenu.Update()
+		case scenes.RaceBattle:
+			s.RaceBattle.Update()
+		case scenes.Shop:
+			s.Shop.Update()
+		}
+	}
+	s.Transition.Update()
+	if s.Transition.IsPaused() {
+		s.CurrentScene = s.NextScene
 	}
 }
 
 func (s *SceneManager) Render() {
-	switch s.CurrentScene {
-	case SceneInsectarium:
+	scene := s.CurrentScene
+	if s.Transition.IsPastHalf() {
+		scene = s.NextScene
+	}
+	switch scene {
+	case scenes.Insectarium:
 		s.Insectarium.Render()
-	case SceneMainMenu:
+	case scenes.MainMenu:
 		s.MainMenu.Render()
-	case SceneRaceBattle:
+	case scenes.RaceBattle:
 		s.RaceBattle.Render()
-	case SceneShop:
+	case scenes.Shop:
 		s.Shop.Render()
 	}
+	s.Transition.Draw()
 }
