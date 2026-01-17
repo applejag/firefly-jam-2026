@@ -6,7 +6,7 @@ author_id = "applejag"
 app_id = "firefly-jam-2026"
 author_name = "Applejag"
 app_name = "Firefly Jam 2026"
-lang = "moon"
+lang = "go"
 
 [files]
 firefly = { path = "assets/firefly-green-palettized.png" }
