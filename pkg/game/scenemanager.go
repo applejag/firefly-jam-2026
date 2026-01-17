@@ -15,8 +15,8 @@ import (
 )
 
 type SceneManager struct {
-	CurrentScene scenes.Scene
-	NextScene    scenes.Scene
+	currentScene scenes.Scene
+	nextScene    scenes.Scene
 	Transition   util.Transition
 
 	MainMenu    mainmenu.Menu
@@ -28,13 +28,20 @@ type SceneManager struct {
 
 // SwitchScene implements [scenes.SceneSwitcher].
 func (s *SceneManager) SwitchScene(scene scenes.Scene) {
-	s.NextScene = scene
+	s.nextScene = scene
 	s.Transition.Play()
 	firefly.LogDebug(fmt.Sprintf("switching scene to %q", scene))
 }
 
+func (s *SceneManager) SwitchSceneNoTransition(scene scenes.Scene) {
+	s.nextScene = scene
+	s.currentScene = scene
+	s.Transition.Stop()
+	firefly.LogDebug(fmt.Sprintf("switching scene to %q (without transition)", scene))
+}
+
 func (s *SceneManager) Boot() {
-	s.NextScene = s.CurrentScene
+	s.nextScene = s.currentScene
 	// register as global scene switcher
 	scenes.SwitchScene = s.SwitchScene
 
@@ -50,8 +57,8 @@ func (s *SceneManager) Boot() {
 }
 
 func (s *SceneManager) Update() {
-	if s.NextScene == s.CurrentScene {
-		switch s.CurrentScene {
+	if s.nextScene == s.currentScene {
+		switch s.currentScene {
 		case scenes.Insectarium:
 			s.Insectarium.Update()
 		case scenes.Field:
@@ -66,14 +73,14 @@ func (s *SceneManager) Update() {
 	}
 	s.Transition.Update()
 	if s.Transition.IsPaused() {
-		s.CurrentScene = s.NextScene
+		s.currentScene = s.nextScene
 	}
 }
 
 func (s *SceneManager) Render() {
-	scene := s.CurrentScene
+	scene := s.currentScene
 	if s.Transition.IsPastHalf() {
-		scene = s.NextScene
+		scene = s.nextScene
 	}
 	switch scene {
 	case scenes.Insectarium:

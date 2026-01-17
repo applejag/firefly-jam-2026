@@ -19,7 +19,7 @@ var scenemanager = game.SceneManager{}
 func boot() {
 	assets.Load()
 
-	scenemanager.CurrentScene = scenes.Shop
+	scenemanager.SwitchSceneNoTransition(scenes.Shop)
 	scenemanager.Boot()
 }
 
