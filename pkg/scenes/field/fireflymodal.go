@@ -58,7 +58,9 @@ func (m *FireflyModal) Boot() {
 	m.scrollSprite = assets.ScrollClose[0]
 	m.tournamentAnim = assets.TournamentButton.Animated(6)
 	m.changeHatBtn = NewButton(ButtonChangeHat, "CHANGE HAT")
+	m.changeHatBtn.Disabled = true
 	m.giveVitaminsBtn = NewButton(ButtonGiveVitamins, "GIVE VITAMINS")
+	m.giveVitaminsBtn.Disabled = true
 	m.playTournamentBtn = NewButton(ButtonTournament, "")
 }
 
@@ -178,8 +180,9 @@ func (k ButtonKind) Previous() ButtonKind {
 }
 
 type Button struct {
-	kind ButtonKind
-	text string
+	kind     ButtonKind
+	text     string
+	Disabled bool
 }
 
 func NewButton(kind ButtonKind, text string) Button {
@@ -196,8 +199,21 @@ func (b *Button) Render(point firefly.Point, focused ButtonKind) {
 		prefix = "> "
 		color = firefly.ColorBlack
 	}
+	if b.Disabled {
+		color = firefly.ColorLightGray
+	}
 	assets.FontPico8_4x6.Draw(prefix, point, color)
 	if b.text != "" {
 		assets.FontPico8_4x6.Draw(b.text, point.Add(firefly.P(assets.FontPico8_4x6.LineWidth(prefix), 0)), color)
+	}
+	if b.Disabled {
+		// Draw strikethrough
+		firefly.DrawLine(point.Add(firefly.P(
+			assets.FontPico8_4x6.LineWidth(prefix),
+			0,
+		)), point.Add(firefly.P(
+			assets.FontPico8_4x6.LineWidth(prefix)+assets.FontPico8_4x6.LineWidth(b.text),
+			-assets.FontEG_6x9.CharHeight()/2,
+		)), firefly.L(firefly.ColorGray, 1))
 	}
 }
