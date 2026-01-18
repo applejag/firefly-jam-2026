@@ -29,8 +29,8 @@ type FireflyModal struct {
 	scrollSprite    firefly.SubImage
 	firefly         *Firefly
 
-	tournamentPage TournamentPage
-	statsPage      StatsPage
+	racingPage RacingPage
+	statsPage  StatsPage
 }
 
 func (m *FireflyModal) IsOpen() bool {
@@ -44,7 +44,8 @@ func (m *FireflyModal) IsClosing() bool {
 func (m *FireflyModal) Open(firefly *Firefly) {
 	m.scrollOpenAnim.Play()
 	m.state = ModalStats
-	m.statsPage.focused = ButtonNone
+	m.statsPage.focused = StatsNone
+	m.racingPage.focused = RacingNone
 	m.firefly = firefly
 }
 
@@ -77,7 +78,7 @@ func (m *FireflyModal) Boot() {
 	m.scrollCloseAnim.Stop()
 	m.scrollSprite = assets.ScrollClose[0]
 	m.statsPage.Boot()
-	m.tournamentPage.Boot()
+	m.racingPage.Boot()
 }
 
 func (m *FireflyModal) Update() {
@@ -92,7 +93,7 @@ func (m *FireflyModal) Update() {
 	case ModalStats:
 		m.statsPage.Update(m)
 	case ModalTournament:
-		m.tournamentPage.Update()
+		m.racingPage.Update()
 	}
 
 	if justPressed := state.Input.JustPressedButtons(); justPressed.Any() {
@@ -128,6 +129,6 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 	case ModalStats:
 		m.statsPage.Render(innerScrollPoint, m.firefly.id)
 	case ModalTournament:
-		m.tournamentPage.Render(innerScrollPoint)
+		m.racingPage.Render(innerScrollPoint)
 	}
 }

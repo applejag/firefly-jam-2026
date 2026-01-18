@@ -8,22 +8,21 @@ import (
 	"github.com/applejag/firefly-jam-2026/pkg/state"
 	"github.com/applejag/firefly-jam-2026/pkg/util"
 	"github.com/firefly-zero/firefly-go/firefly"
-	"github.com/orsinium-labs/tinymath"
 )
 
 type StatsPage struct {
 	changeHatBtn      Button
 	giveVitaminsBtn   Button
 	playTournamentBtn Button
-	focused           ButtonKind
+	focused           StatsButton
 }
 
 func (p *StatsPage) Boot() {
-	p.changeHatBtn = NewButton(ButtonChangeHat, "CHANGE HAT")
+	p.changeHatBtn = NewButton("CHANGE HAT")
 	p.changeHatBtn.Disabled = true
-	p.giveVitaminsBtn = NewButton(ButtonGiveVitamins, "GIVE VITAMINS")
+	p.giveVitaminsBtn = NewButton("GIVE VITAMINS")
 	p.giveVitaminsBtn.Disabled = true
-	p.playTournamentBtn = NewButton(ButtonTournament, "RACING")
+	p.playTournamentBtn = NewButton("RACING")
 }
 
 func (p *StatsPage) Update(modal *FireflyModal) {
@@ -52,15 +51,15 @@ func (p *StatsPage) handleInputButtons(justPressed firefly.Buttons, modal *Firef
 	switch {
 	case justPressed.S:
 		switch p.focused {
-		case ButtonChangeHat:
+		case StatsChangeHat:
 			// Shake to signify that the button doesn't work
 			p.changeHatBtn.Shake()
 			// TODO: allow transition to hats page
 			// m.state = ModalHats
-		case ButtonGiveVitamins:
+		case StatsGiveVitamins:
 			// Shake to signify that the button doesn't work
 			p.giveVitaminsBtn.Shake()
-		case ButtonTournament:
+		case StatsRacing:
 			modal.state = ModalTournament
 
 			// state.Game.AddMyFireflyToRaceBattle(m.firefly.id)
@@ -104,110 +103,54 @@ func (p *StatsPage) Render(innerScrollPoint firefly.Point, fireflyID int) {
 	assets.FireflySheet[0].Draw(rectPoint.Add(firefly.P(6, 6)))
 
 	changeHatPoint := innerScrollPoint.Add(firefly.P(0, scrollInnerHeight-26))
-	p.changeHatBtn.Render(changeHatPoint, p.focused)
+	p.changeHatBtn.Render(changeHatPoint, p.focused == StatsChangeHat)
 
 	giveVitaminsPoint := changeHatPoint.Add(firefly.P(0, 8))
-	p.giveVitaminsBtn.Render(giveVitaminsPoint, p.focused)
+	p.giveVitaminsBtn.Render(giveVitaminsPoint, p.focused == StatsGiveVitamins)
 
 	tournamentPoint := giveVitaminsPoint.Add(firefly.P(0, 8))
-	p.playTournamentBtn.Render(tournamentPoint, p.focused)
+	p.playTournamentBtn.Render(tournamentPoint, p.focused == StatsRacing)
 
 	// m.tournamentAnim.Draw(tournamentPoint.Add(firefly.P(8, -9)))
 	// m.playTournamentBtn.Render(tournamentPoint, m.focused)
 	// assets.TrainButton.Draw(tournamentPoint.Add(firefly.P(72, -11)))
 }
 
-type ButtonKind byte
+type StatsButton byte
 
 const (
-	ButtonNone ButtonKind = iota
-	ButtonChangeHat
-	ButtonGiveVitamins
-	ButtonTournament
-
-	buttonCount = 4
+	StatsNone StatsButton = iota
+	StatsChangeHat
+	StatsGiveVitamins
+	StatsRacing
 )
 
-func (k ButtonKind) Down() ButtonKind {
+func (k StatsButton) Down() StatsButton {
 	switch k {
-	case ButtonChangeHat:
-		return ButtonGiveVitamins
-	case ButtonGiveVitamins:
-		return ButtonTournament
-	case ButtonNone:
-		return ButtonChangeHat
-	case ButtonTournament:
-		return ButtonChangeHat
+	case StatsChangeHat:
+		return StatsGiveVitamins
+	case StatsGiveVitamins:
+		return StatsRacing
+	case StatsNone:
+		return StatsChangeHat
+	case StatsRacing:
+		return StatsChangeHat
 	default:
 		panic("unexpected field.ButtonKind")
 	}
 }
 
-func (k ButtonKind) Up() ButtonKind {
+func (k StatsButton) Up() StatsButton {
 	switch k {
-	case ButtonChangeHat:
-		return ButtonTournament
-	case ButtonGiveVitamins:
-		return ButtonChangeHat
-	case ButtonNone:
-		return ButtonTournament
-	case ButtonTournament:
-		return ButtonGiveVitamins
+	case StatsChangeHat:
+		return StatsRacing
+	case StatsGiveVitamins:
+		return StatsChangeHat
+	case StatsNone:
+		return StatsRacing
+	case StatsRacing:
+		return StatsGiveVitamins
 	default:
 		panic("unexpected field.ButtonKind")
 	}
-}
-
-const ButtonShakeDuration = 45
-
-type Button struct {
-	kind     ButtonKind
-	text     string
-	Disabled bool
-	shake    int
-}
-
-func NewButton(kind ButtonKind, text string) Button {
-	return Button{
-		kind: kind,
-		text: text,
-	}
-}
-
-func (b *Button) Update() {
-	if b.shake > 0 {
-		b.shake--
-	}
-}
-
-func (b *Button) Render(point firefly.Point, focused ButtonKind) {
-	prefix := "- "
-	color := firefly.ColorGray
-	if focused == b.kind {
-		prefix = "> "
-		color = firefly.ColorBlack
-	}
-	if b.Disabled {
-		color = firefly.ColorLightGray
-	}
-	assets.FontPico8_4x6.Draw(prefix, point, color)
-	if b.text != "" {
-		if b.shake > 0 {
-			t := float32(b.shake) / ButtonShakeDuration
-			point = point.Add(firefly.P(int(tinymath.Sin(t*45)*t*4), 0))
-		}
-		textPoint := point.Add(firefly.P(assets.FontPico8_4x6.LineWidth(prefix), 0))
-		assets.FontPico8_4x6.Draw(b.text, textPoint, color)
-		if b.Disabled {
-			// Draw strikethrough
-			firefly.DrawLine(textPoint, textPoint.Add(firefly.P(
-				assets.FontPico8_4x6.LineWidth(b.text),
-				-assets.FontEG_6x9.CharHeight()/2,
-			)), firefly.L(firefly.ColorGray, 1))
-		}
-	}
-}
-
-func (b *Button) Shake() {
-	b.shake = ButtonShakeDuration
 }
