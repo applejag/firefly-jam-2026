@@ -2,7 +2,6 @@ package racebattle
 
 import (
 	"github.com/applejag/firefly-jam-2026/assets"
-	"github.com/applejag/firefly-jam-2026/pkg/state"
 	"github.com/applejag/firefly-jam-2026/pkg/util"
 
 	"github.com/firefly-zero/firefly-go/firefly"
@@ -28,12 +27,12 @@ func (c Camera) WorldPointToCameraSpace(pos firefly.Point) firefly.Point {
 
 func (c *Camera) Update(scene *Scene) {
 	for _, player := range scene.Players {
-		if player.Peer == state.Input.Me {
-			c.pos = player.Pos.Sub(util.V(ScreenWidthHalf, ScreenHeightHalf))
+		// if player.IsPlayer && player.Peer == state.Input.Me {
+		c.pos = player.Pos.Sub(util.V(ScreenWidthHalf, ScreenHeightHalf))
 
-			c.pos.X = util.Clamp(c.pos.X, 0, float32(assets.RacingMap.Width()-firefly.Width))
-			c.pos.Y = util.Clamp(c.pos.Y, 0, float32(assets.RacingMap.Height()-firefly.Height))
-			break
-		}
+		c.pos.X = util.Clamp(c.pos.X, 0, float32(assets.RacingMap.Width()-firefly.Width))
+		c.pos.Y = util.Clamp(c.pos.Y, 0, float32(assets.RacingMap.Height()-firefly.Height))
+		break
+		//}
 	}
 }

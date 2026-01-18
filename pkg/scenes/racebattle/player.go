@@ -25,6 +25,9 @@ const (
 	/// Maximum movement speed, in pixels/frame
 	MoveMaxSpeed = 1.2
 
+	MoveAwayFromEachOtherSpeed     = 0.3
+	MoveAwayFromEachOtherThreshold = 5
+
 	/// Acceleration from 0 to max speed, in %/frame
 	MoveAcceleration = FPSInv / 4.5 // 0%-100% in 4.5sec
 
@@ -72,36 +75,76 @@ func (f *Firefly) Update() {
 	f.SpriteSheet.Update()
 	f.SpriteSheetRev.Update()
 	if f.IsPlayer {
-		f.UpdatePlayerInput()
+		f.updatePlayerInput()
+	} else {
+		f.updateAIInput()
 	}
 	dir := util.AngleToVec2(f.Angle)
 	newPos := f.Pos.Add(dir.Scale(MoveMaxSpeed * f.SpeedFactor))
-	switch assets.RacingMapMask.GetColorAt(newPos.Point()) {
-	case firefly.ColorWhite:
-		f.Pos = newPos
-		f.PathTracker.Update(f.Pos)
-	default:
-		f.SpeedFactor = 0 // reset momentum
-	}
+	f.Move(newPos)
+	f.PathTracker.Update(f.Pos)
 }
 
-func (f *Firefly) UpdatePlayerInput() {
+func (f *Firefly) Move(to util.Vec2) {
+	delta := to.Sub(f.Pos)
+	if delta.RadiusSquared() <= 0.01 {
+		// no need to move
+		return
+	}
+	for delta.RadiusSquared() > 0.01 {
+		to = f.Pos.Add(delta)
+		switch assets.RacingMapMask.GetColorAt(to.Point()) {
+		case firefly.ColorWhite:
+			f.Pos = to
+			return
+		default:
+			// reduce distance, and try move again
+			delta = delta.Scale(0.7)
+		}
+	}
+	f.SpeedFactor = 0 // reset momentum when colliding into the wall
+}
+
+func (f *Firefly) MoveAwayFrom(other *Firefly) {
+	delta := other.Pos.Sub(f.Pos)
+	if delta.RadiusSquared() > (MoveAwayFromEachOtherThreshold * MoveAwayFromEachOtherThreshold) {
+		// far enough away from each other
+		return
+	}
+
+	f.Move(f.Pos.MoveTowards(f.Pos.Sub(delta), MoveAwayFromEachOtherSpeed))
+	other.Move(other.Pos.MoveTowards(other.Pos.Add(delta), MoveAwayFromEachOtherSpeed))
+}
+
+func (f *Firefly) updatePlayerInput() {
 	pad, ok := firefly.ReadPad(f.Peer)
 	if !ok {
-		f.UpdateSpeedFactor(0)
+		f.updateSpeedFactor(0)
 		return
 	}
 	radiusPercentage := pad.Radius() / 1000
 	// multiply by 1.2 and clamp so that there's some threshold to where
 	// top speed is on the input
 	targetSpeedFactor := min(radiusPercentage*1.2, 1.0)
-	f.UpdateSpeedFactor(targetSpeedFactor)
+	f.updateSpeedFactor(targetSpeedFactor)
 	if pad.X != 0 && pad.Y != 0 {
-		f.UpdateAngle(pad.Azimuth())
+		f.updateAngle(pad.Azimuth())
 	}
 }
 
-func (f *Firefly) UpdateSpeedFactor(target float32) {
+func (f *Firefly) updateAIInput() {
+	// current := f.PathTracker.PeekCurrent()
+	// next := f.PathTracker.PeekNext()
+	// firefly.LogDebug(fmt.Sprintf("current: %s, next: %s", current, next))
+
+	target := f.PathTracker.PeekSoftNext(f.Pos)
+	delta := target.Sub(f.Pos)
+	// TODO: slow down if it's a tight curve
+	f.updateSpeedFactor(1)
+	f.updateAngle(delta.Azimuth())
+}
+
+func (f *Firefly) updateSpeedFactor(target float32) {
 	if target > f.SpeedFactor {
 		f.SpeedFactor = util.MoveTowards(f.SpeedFactor, target, MoveAcceleration)
 	} else {
@@ -109,18 +152,18 @@ func (f *Firefly) UpdateSpeedFactor(target float32) {
 	}
 }
 
-func (f *Firefly) UpdateAngle(target firefly.Angle) {
+func (f *Firefly) updateAngle(target firefly.Angle) {
 	rotationSpeed := util.Lerp(RotationSpeedWhenStillRad, RotationSpeedWhenMovingRad, f.SpeedFactor)
 	f.Angle = util.RotateTowards(f.Angle, target, firefly.Radians(rotationSpeed))
 }
 
-func (f *Firefly) Draw(scene *Scene) {
+func (f *Firefly) Render(scene *Scene) {
 	point := scene.Camera.WorldVec2ToCameraSpace(f.Pos)
 	// Draw shadow
 	firefly.DrawCircle(point.Add(firefly.P(-2, 2)), 5, firefly.Solid(firefly.ColorDarkGray))
 	if f.IsPlayer && f.Peer == state.Input.Me {
 		// Draw arrow to direction you should move in
-		targetPoint := f.PathTracker.PeekNext().Add(f.PathTracker.PeekCurrent()).Scale(0.5)
+		targetPoint := f.PathTracker.PeekSoftNext(f.Pos)
 		targetAngle := targetPoint.Sub(f.Pos).Azimuth()
 		targetDir := util.AngleToVec2(targetAngle)
 		drawArrow(
