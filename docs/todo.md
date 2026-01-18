@@ -20,20 +20,18 @@
 
 ## code
 
-1. 
+- [x] use firefly skill stats in the racing battle
 
-1. use firefly skill stats in the racing battle
+- [ ] add training mode
 
-2. add training mode
+- [ ] move slower in water
 
-3. move slower in water
+- [ ] firefly breeding
+  
+  1. maybe stick with buying fireflies for the jam
 
-4. firefly breeding
-   
-   1. maybe stick with buying fireflies for the jam
-
-5. cosmetics
-   
-   1. hat (requires submenu coding)
+- [ ] cosmetics
+  
+  1. hat (requires submenu coding)
 
 
