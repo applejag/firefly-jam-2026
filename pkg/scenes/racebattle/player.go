@@ -39,6 +39,7 @@ type Firefly struct {
 	IsPlayer    bool
 	Peer        firefly.Peer
 	PathTracker PathTracker
+	LoopsDone   int
 
 	SpriteSheet    util.AnimatedSheet
 	SpriteSheetRev util.AnimatedSheet
@@ -82,7 +83,10 @@ func (f *Firefly) Update() {
 	dir := util.AngleToVec2(f.Angle)
 	newPos := f.Pos.Add(dir.Scale(MoveMaxSpeed * f.SpeedFactor))
 	f.Move(newPos)
-	f.PathTracker.Update(f.Pos)
+	if f.PathTracker.Update(f.Pos) == PathTrackerLooped {
+		// loop!
+		f.LoopsDone++
+	}
 }
 
 func (f *Firefly) Move(to util.Vec2) {

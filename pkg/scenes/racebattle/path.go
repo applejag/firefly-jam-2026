@@ -87,7 +87,7 @@ func (p PathTracker) PeekNext() util.Vec2 {
 	return p.next
 }
 
-func (p *PathTracker) GoNext() {
+func (p *PathTracker) goNext() {
 	p.previous = p.current
 	p.index = (p.index + 1) % len(p.path)
 	p.current = p.path[p.index]
@@ -126,17 +126,29 @@ func (p *PathTracker) Progress(pos util.Vec2) float32 {
 	return float32(p.index+1)/float32(len(p.path)) + distWeight/float32(len(p.path))
 }
 
-func (p *PathTracker) Update(pos util.Vec2) {
+func (p *PathTracker) Update(pos util.Vec2) PathTrackerResult {
 	curr := p.PeekCurrent()
 	distSquaredToCurr := curr.Sub(pos).RadiusSquared()
 	if distSquaredToCurr >= PathToCurrentThresholdSquared {
-		return // keep current
+		return PathTrackerKeepCurrent
 	}
 	prev := p.PeekPrevious()
 	distSquaredToPrev := pos.Sub(prev).RadiusSquared()
 	distSquaredBetweenPoints := curr.Sub(prev).RadiusSquared()
 	if distSquaredToPrev < distSquaredBetweenPoints {
-		return // keep current
+		return PathTrackerKeepCurrent
 	}
-	p.GoNext()
+	p.goNext()
+	if p.index == 0 {
+		return PathTrackerLooped
+	}
+	return PathTrackerNextCheckpoint
 }
+
+type PathTrackerResult byte
+
+const (
+	PathTrackerKeepCurrent PathTrackerResult = iota
+	PathTrackerNextCheckpoint
+	PathTrackerLooped
+)

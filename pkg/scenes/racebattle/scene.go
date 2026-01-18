@@ -55,7 +55,7 @@ func (s *Scene) updateMyPlayerPlace() {
 	var myProgress float32
 	for _, player := range s.Players {
 		if player.IsPlayer && player.Peer == state.Input.Me {
-			myProgress = player.Progress()
+			myProgress = player.Progress() + float32(player.LoopsDone)
 			break
 		}
 	}
@@ -65,7 +65,7 @@ func (s *Scene) updateMyPlayerPlace() {
 		if player.IsPlayer && player.Peer == state.Input.Me {
 			continue
 		}
-		if player.Progress() > myProgress {
+		if player.Progress()+float32(player.LoopsDone) > myProgress {
 			playersWithHigerProgress++
 		}
 	}
