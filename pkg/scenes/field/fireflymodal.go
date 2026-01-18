@@ -67,7 +67,7 @@ func (m *FireflyModal) Update() {
 }
 
 func (m *FireflyModal) Render() {
-	const scrollWidth = 111
+	const scrollWidth = 132
 	point := firefly.P(firefly.Width/2-scrollWidth/2, 24)
 	m.scrollOpenAnim.Draw(point)
 	m.scrollCloseAnim.Draw(point)
@@ -79,7 +79,7 @@ func (m *FireflyModal) Render() {
 
 func (m *FireflyModal) renderScroll(point firefly.Point) {
 	m.scrollSprite.Draw(point)
-	assets.Exit.Draw(point.Add(firefly.P(74, 2)))
+	assets.Exit.Draw(point.Add(firefly.P(88, 2)))
 
 	dataIndex := state.Game.FindFireflyByID(m.firefly.id)
 	if dataIndex == -1 {
@@ -87,9 +87,9 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 	}
 	data := state.Game.Fireflies[dataIndex]
 
-	const scrollInnerWidth = 77
+	const scrollInnerWidth = 92
 
-	innerScrollPoint := point.Add(firefly.P(18, 18))
+	innerScrollPoint := point.Add(firefly.P(21, 20))
 
 	text := util.WordWrap(
 		data.Name.String(),
@@ -105,9 +105,15 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 
 	speedPoint := textPos.Add(firefly.P(2, textHeight+4))
 	assets.FontEG_6x9.Draw(strconv.Itoa(data.Speed), speedPoint, firefly.ColorBlack)
-	assets.FontPico8_4x6.Draw("speed", speedPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
+	assets.FontPico8_4x6.Draw("SPEED", speedPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
 
-	nimblenessPoint := textPos.Add(firefly.P(36, textHeight+4))
+	nimblenessPoint := textPos.Add(firefly.P(34, textHeight+4))
 	assets.FontEG_6x9.Draw(strconv.Itoa(data.Nimbleness), nimblenessPoint, firefly.ColorBlack)
-	assets.FontPico8_4x6.Draw("nimbleness", nimblenessPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
+	assets.FontPico8_4x6.Draw("NIMBLE", nimblenessPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
+
+	rectPoint := textPos.Add(firefly.P(64, textHeight+4-charHeight))
+	rectSize := firefly.S(22, 22)
+	firefly.DrawRoundedRect(rectPoint, rectSize, firefly.S(3, 3), firefly.Outlined(firefly.ColorGray, 1))
+
+	assets.FireflySheet[0].Draw(rectPoint.Add(firefly.P(6, 6)))
 }

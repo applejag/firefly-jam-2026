@@ -12,7 +12,7 @@ var (
 	Field               firefly.Image
 	fireflyHighlightBuf [262]byte
 	FireflyHighlight    util.SpriteSheet
-	scrollBuf           [13895]byte
+	scrollBuf           [16375]byte
 	ScrollClose         util.SpriteSheet
 	ScrollOpen          util.SpriteSheet
 
