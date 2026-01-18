@@ -165,11 +165,11 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 	assets.FontEG_6x9.Draw(text, textPos, firefly.ColorDarkGray)
 	textHeight := charHeight * (strings.Count(text, "\n") + 1)
 
-	speedPoint := textPos.Add(firefly.P(2, textHeight+4))
+	speedPoint := textPos.Add(firefly.P(2, textHeight))
 	assets.FontEG_6x9.Draw(strconv.Itoa(data.Speed), speedPoint, firefly.ColorBlack)
 	assets.FontPico8_4x6.Draw("SPEED", speedPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
 
-	nimblenessPoint := textPos.Add(firefly.P(34, textHeight+4))
+	nimblenessPoint := speedPoint.Add(firefly.P(32, 0))
 	assets.FontEG_6x9.Draw(strconv.Itoa(data.Nimbleness), nimblenessPoint, firefly.ColorBlack)
 	assets.FontPico8_4x6.Draw("NIMBLE", nimblenessPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
 
@@ -179,13 +179,13 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 
 	assets.FireflySheet[0].Draw(rectPoint.Add(firefly.P(6, 6)))
 
-	changeHatPoint := innerScrollPoint.Add(firefly.P(0, scrollInnerHeight-30))
+	changeHatPoint := innerScrollPoint.Add(firefly.P(0, scrollInnerHeight-26))
 	m.changeHatBtn.Render(changeHatPoint, m.focused)
 
-	giveVitaminsPoint := changeHatPoint.Add(firefly.P(0, 9))
+	giveVitaminsPoint := changeHatPoint.Add(firefly.P(0, 8))
 	m.giveVitaminsBtn.Render(giveVitaminsPoint, m.focused)
 
-	tournamentPoint := giveVitaminsPoint.Add(firefly.P(0, 14))
+	tournamentPoint := giveVitaminsPoint.Add(firefly.P(0, 13))
 	m.tournamentAnim.Draw(tournamentPoint.Add(firefly.P(8, -9)))
 	m.playTournamentBtn.Render(tournamentPoint, m.focused)
 }
