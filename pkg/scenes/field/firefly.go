@@ -9,7 +9,7 @@ import (
 
 const (
 	FPS                       = 60
-	FireflyAnimationFPS       = 15
+	FireflyAnimationFPS       = 3
 	FireflySpeedPixelsPerTick = 0.2
 )
 

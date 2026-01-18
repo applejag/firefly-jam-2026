@@ -10,7 +10,7 @@ lang = "go"
 
 [files]
 firefly = { path = "assets/firefly-green-palettized.png" }
-firefly-rev = { path = "assets/firefly-green-palettized-reverse.png" }
+firefly-hats = { path = "assets/hats firefly size cropped.png" }
 field = { path = "assets/field.png" }
 firefly-hi = { path = "assets/firefly-highlight.png" }
 scroll = { path = "assets/scroll-sheet-reduced.png" }

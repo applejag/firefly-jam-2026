@@ -2,6 +2,7 @@ package assets
 
 import (
 	"slices"
+	"strconv"
 
 	"github.com/applejag/firefly-jam-2026/pkg/util"
 
@@ -39,10 +40,12 @@ var (
 	VictorySplash        util.SpriteSheet
 	defeatSplashBuf      [86407]byte
 	DefeatSplash         util.SpriteSheet
-	fireflySheetBuf      [333]byte
+	fireflySheetBuf      [213]byte
 	FireflySheet         util.SpriteSheet
-	fireflySheetRevBuf   [333]byte
 	FireflySheetRev      util.SpriteSheet
+
+	fireflyHatsBuf [973]byte
+	FireflyHats    util.SpriteSheet
 
 	titleScreenBuf          [38413]byte
 	TitleScreen             util.SpriteSheet
@@ -78,9 +81,10 @@ var (
 )
 
 func Load() {
-	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("train-btn")))
+	firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("firefly")))
 	Field = firefly.LoadImage("field", fieldBuf[:])
 	FireflyHighlight = util.SplitImageBySize(firefly.LoadImage("firefly-hi", fireflyHighlightBuf[:]), firefly.S(32, 32))
+	FireflyHats = util.SplitImageBySize(firefly.LoadImage("firefly-hats", fireflyHatsBuf[:]), firefly.S(10, 8))
 	ScrollClose = util.SplitImageByCount(firefly.LoadImage("scroll", scrollBuf[:]), firefly.S(4, 1))
 	ScrollOpen = slices.Clone(ScrollClose)
 	slices.Reverse(ScrollOpen)
@@ -95,8 +99,10 @@ func Load() {
 	RacingPlace = util.SplitImageBySize(firefly.LoadImage("racing-place", racingPlaceBuf[:]), firefly.S(28, 33))
 	VictorySplash = util.SplitImageByCount(firefly.LoadImage("victory-splash", victorySplashBuf[:]), firefly.S(3, 3))
 	DefeatSplash = util.SplitImageByCount(firefly.LoadImage("defeat-splash", defeatSplashBuf[:]), firefly.S(3, 3))
-	FireflySheet = util.SplitImageByCount(firefly.LoadImage("firefly", fireflySheetBuf[:]), firefly.S(7, 1))
-	FireflySheetRev = util.SplitImageByCount(firefly.LoadImage("firefly-rev", fireflySheetRevBuf[:]), firefly.S(7, 1))
+	fireflyCombinedSheet := util.SplitImageBySize(firefly.LoadImage("firefly", fireflySheetBuf[:]), firefly.S(9, 10))
+	FireflySheet = fireflyCombinedSheet[0:2]
+	FireflySheetRev = fireflyCombinedSheet[2:4]
+
 	TitleScreen = util.SplitImageByCount(firefly.LoadImage("title-screen", titleScreenBuf[:]), firefly.S(2, 1))
 	TitleButtonHighlight = util.SplitImageByCount(firefly.LoadImage("title-button-hi", titleButtonHighlightBuf[:]), firefly.S(2, 1))
 	TitleNoContinue = firefly.LoadImage("title-no-continue", titleNoContinueBuf[:])

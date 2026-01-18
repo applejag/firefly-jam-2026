@@ -23,6 +23,7 @@ type Firefly struct {
 	Nimbleness    int
 	BattlesPlayed int
 	BattlesWon    int
+	Hat           int
 }
 
 type GameState struct {

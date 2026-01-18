@@ -15,7 +15,7 @@ const (
 	FPS    = 60
 	FPSInv = 1.0 / FPS
 
-	FireflyAnimationFPS = 30.0
+	FireflyAnimationFPS = 10.0
 
 	RotationSpeedFactorWhenStill = 5 // 5x faster rotation when still
 
