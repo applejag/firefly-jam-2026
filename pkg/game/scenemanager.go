@@ -72,7 +72,7 @@ func (s *SceneManager) Update() {
 			s.Field.Update()
 		case scenes.MainMenu:
 			s.MainMenu.Update()
-		case scenes.RaceBattle:
+		case scenes.RacingBattle, scenes.RacingTraining:
 			s.RaceBattle.Update()
 		case scenes.Shop:
 			s.Shop.Update()
@@ -96,7 +96,7 @@ func (s *SceneManager) Render() {
 		s.Field.Render()
 	case scenes.MainMenu:
 		s.MainMenu.Render()
-	case scenes.RaceBattle:
+	case scenes.RacingBattle, scenes.RacingTraining:
 		s.RaceBattle.Render()
 	case scenes.Shop:
 		s.Shop.Render()
@@ -112,8 +112,10 @@ func (s *SceneManager) onSceneSwitch(scene scenes.Scene) {
 	switch scene {
 	case scenes.Field:
 		s.Field.OnSceneEnter()
-	case scenes.RaceBattle:
-		s.RaceBattle.OnSceneEnter()
+	case scenes.RacingBattle:
+		s.RaceBattle.OnSceneEnter(2)
+	case scenes.RacingTraining:
+		s.RaceBattle.OnSceneEnter(1)
 	case scenes.Shop:
 		s.Shop.OnSceneEnter()
 	}

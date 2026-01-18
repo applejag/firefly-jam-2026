@@ -1,12 +1,13 @@
 package field
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/applejag/firefly-jam-2026/assets"
 	"github.com/applejag/firefly-jam-2026/pkg/scenes"
 	"github.com/applejag/firefly-jam-2026/pkg/state"
 	"github.com/applejag/firefly-jam-2026/pkg/util"
-	"strconv"
-	"strings"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 	"github.com/orsinium-labs/tinymath"
@@ -122,7 +123,7 @@ func (m *FireflyModal) handleInputButtons(justPressed firefly.Buttons) {
 		case ButtonTournament:
 			state.Game.AddMyFireflyToRaceBattle(m.firefly.id)
 			m.CloseWithoutTransition()
-			scenes.SwitchScene(scenes.RaceBattle)
+			scenes.SwitchScene(scenes.RacingBattle)
 		}
 	}
 }

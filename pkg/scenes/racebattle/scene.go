@@ -118,7 +118,7 @@ func (s *Scene) Update() {
 			case DefeatButtonBackToField:
 				scenes.SwitchScene(scenes.Field)
 			case DefeatButtonTryAgain:
-				scenes.SwitchScene(scenes.RaceBattle)
+				scenes.SwitchScene(scenes.RacingBattle)
 			}
 
 		case justPressed.E:
@@ -262,7 +262,7 @@ func (s *Scene) changeStatus(newStatus GameStatus) {
 	}
 }
 
-func (s *Scene) OnSceneEnter() {
+func (s *Scene) OnSceneEnter(players int) {
 	// clear the slices instead of setting to nil, just to avoid extra allocations
 	clear(s.Players)
 	s.Players = s.Players[:0]
@@ -270,7 +270,7 @@ func (s *Scene) OnSceneEnter() {
 	for peer, stats := range state.Game.InRaceBattle {
 		s.Players = append(s.Players, NewFireflyPlayer(peer, stats, util.V(41, 390).Add(offsetForPlayer(len(s.Players))), firefly.Degrees(271)))
 	}
-	if len(s.Players) < 2 {
+	for len(s.Players) < players {
 		s.Players = append(s.Players, NewFireflyBot(util.V(41, 390).Add(offsetForPlayer(len(s.Players))), firefly.Degrees(271)))
 	}
 	// Update once so it focuses on player when we're transitioning to this scene

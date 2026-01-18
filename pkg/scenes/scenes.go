@@ -9,7 +9,8 @@ const (
 	Field
 	Insectarium
 	Shop
-	RaceBattle
+	RacingBattle
+	RacingTraining
 )
 
 func (s Scene) String() string {
@@ -20,8 +21,10 @@ func (s Scene) String() string {
 		return "field"
 	case MainMenu:
 		return "main menu"
-	case RaceBattle:
-		return "race battle"
+	case RacingBattle:
+		return "racing battle"
+	case RacingTraining:
+		return "racing training"
 	case Shop:
 		return "shop"
 	default:
