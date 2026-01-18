@@ -2,6 +2,8 @@ package state
 
 import (
 	"firefly-jam-2026/pkg/util"
+	gamev1 "firefly-jam-2026/proto/game/v1"
+	"fmt"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -12,6 +14,13 @@ var (
 		InRaceBattle: map[firefly.Peer]Firefly{},
 	}
 )
+
+type Firefly struct {
+	ID         int
+	Name       util.Name
+	Speed      int
+	Nimbleness int
+}
 
 type GameState struct {
 	Fireflies    []Firefly
@@ -28,6 +37,7 @@ func (g *GameState) AddFirefly() {
 		Speed:      randomness,
 		Nimbleness: 8 + (14 - randomness),
 	})
+	g.Save()
 }
 
 func (g *GameState) FindFireflyByID(id int) int {
@@ -51,9 +61,23 @@ func (g *GameState) RemoveMyFireflyFromRaceBattle() {
 	delete(g.InRaceBattle, Input.Me)
 }
 
-type Firefly struct {
-	ID         int
-	Name       util.Name
-	Speed      int
-	Nimbleness int
+func (g *GameState) Save() {
+	state := gamev1.GameState{
+		Fireflies: make([]*gamev1.Firefly, len(g.Fireflies)),
+	}
+	for i, f := range g.Fireflies {
+		state.Fireflies[i] = &gamev1.Firefly{
+			Id:         int32(f.ID),
+			Name:       int32(f.Name),
+			Speed:      int32(f.Speed),
+			Nimbleness: int32(f.Nimbleness),
+		}
+	}
+	var buf [1000]byte
+	written, err := state.MarshalToVT(buf[:])
+	if err != nil {
+		panic("failed to marshal save file")
+	}
+	firefly.DumpFile("save", buf[:written])
+	firefly.LogDebug(fmt.Sprint("saved game, size: ", written))
 }

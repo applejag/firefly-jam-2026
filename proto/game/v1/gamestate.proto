@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package game.v1;
+
+option go_package = "game/v1";
+
+message GameState {
+  repeated Firefly fireflies = 1;
+}
+
+message Firefly {
+  int32 id = 1;
+  int32 name = 2;
+  int32 speed = 3;
+  int32 nimbleness = 4;
+}

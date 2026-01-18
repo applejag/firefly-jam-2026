@@ -5,10 +5,33 @@
 [tools]
 uv = "latest"
 "pipx:reuse" = "latest"
+protoc = "33.4"
+protoc-gen-go = "1.36.11"
+
+[tasks."install:tools"]
+description = "Install protoc plugins"
+run = "go install tool"
+
+[tasks.generate]
+# using https://github.com/planetscale/vtprotobuf
+description = "Generate protobuf files"
+run = """
+    : "${GOBIN:="$(go env GOBIN)"}"
+    : "${GOBIN:="$(go env GOPATH)/bin"}"
+    protoc \
+        --go_out=proto --plugin protoc-gen-go="${GOBIN}/protoc-gen-go" \
+        --go-vtproto_out=proto --plugin protoc-gen-go-vtproto="${GOBIN}/protoc-gen-go-vtproto" \
+        --go-vtproto_opt=features=size+marshal+unmarshal_unsafe \
+        proto/game/v1/gamestate.proto
+"""
+sources = ['proto/game/v1/*.proto']
+outputs = ['proto/game/v1/*.go']
+depends = ['install:tools']
 
 [tasks.build]
 description = "Build the game using firefly CLI"
 run = "ff build"
+depends = ['generate']
 
 [tasks.start]
 description = "Run the game using firefly emulator"
