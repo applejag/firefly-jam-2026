@@ -108,7 +108,7 @@ func (s *Scene) OnSceneEnter() {
 		s.Players = append(s.Players, NewFireflyPlayer(peer, util.V(41, 390).Add(offsetForPlayer(len(s.Players))), firefly.Degrees(271)))
 	}
 	if len(s.Players) < 2 {
-		s.Players = append(s.Players, NewFireflyAI(util.V(41, 390).Add(offsetForPlayer(len(s.Players))), firefly.Degrees(271)))
+		s.Players = append(s.Players, NewFireflyBot(util.V(41, 390).Add(offsetForPlayer(len(s.Players))), firefly.Degrees(271)))
 	}
 	s.Camera.Update(s)
 }

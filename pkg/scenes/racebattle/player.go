@@ -61,7 +61,7 @@ func NewFireflyPlayer(peer firefly.Peer, pos util.Vec2, angle firefly.Angle) Fir
 	}
 }
 
-func NewFireflyAI(pos util.Vec2, angle firefly.Angle) Firefly {
+func NewFireflyBot(pos util.Vec2, angle firefly.Angle) Firefly {
 	return Firefly{
 		IsPlayer:       false,
 		PathTracker:    NewPathTracker(path),
@@ -78,7 +78,7 @@ func (f *Firefly) Update() {
 	if f.IsPlayer {
 		f.updatePlayerInput()
 	} else {
-		f.updateAIInput()
+		f.updateBotInput()
 	}
 	dir := util.AngleToVec2(f.Angle)
 	newPos := f.Pos.Add(dir.Scale(MoveMaxSpeed * f.SpeedFactor))
@@ -136,7 +136,7 @@ func (f *Firefly) updatePlayerInput() {
 	}
 }
 
-func (f *Firefly) updateAIInput() {
+func (f *Firefly) updateBotInput() {
 	// current := f.PathTracker.PeekCurrent()
 	// next := f.PathTracker.PeekNext()
 	// firefly.LogDebug(fmt.Sprintf("current: %s, next: %s", current, next))
