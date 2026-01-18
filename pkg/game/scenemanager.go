@@ -58,8 +58,6 @@ func (s *SceneManager) Boot() {
 	s.MainMenu.Boot()
 	s.RaceBattle.Boot()
 	s.Shop.Boot()
-
-	s.Shop.Shop.AddFireflyItem(0, 10, assets.ShopItem[6])
 }
 
 func (s *SceneManager) Update() {
@@ -116,5 +114,7 @@ func (s *SceneManager) onSceneSwitch(scene scenes.Scene) {
 		s.Field.OnSceneEnter()
 	case scenes.RaceBattle:
 		s.RaceBattle.OnSceneEnter()
+	case scenes.Shop:
+		s.Shop.OnSceneEnter()
 	}
 }

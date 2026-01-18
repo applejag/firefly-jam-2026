@@ -11,8 +11,11 @@ import (
 )
 
 type Save struct {
-	unknownFields []byte
-	Fireflies     []*Firefly `protobuf:"bytes,1,rep,name=fireflies,proto3" json:"fireflies,omitempty"`
+	unknownFields      []byte
+	Fireflies          []*Firefly `protobuf:"bytes,1,rep,name=fireflies,proto3" json:"fireflies,omitempty"`
+	BattlesWonTotal    int32      `protobuf:"varint,2,opt,name=battles_won_total,json=battlesWonTotal,proto3" json:"battlesWonTotal,omitempty"`
+	BattlesPlayedTotal int32      `protobuf:"varint,3,opt,name=battles_played_total,json=battlesPlayedTotal,proto3" json:"battlesPlayedTotal,omitempty"`
+	Money              int32      `protobuf:"varint,4,opt,name=money,proto3" json:"money,omitempty"`
 }
 
 func (x *Save) Reset() {
@@ -28,12 +31,35 @@ func (x *Save) GetFireflies() []*Firefly {
 	return nil
 }
 
+func (x *Save) GetBattlesWonTotal() int32 {
+	if x != nil {
+		return x.BattlesWonTotal
+	}
+	return 0
+}
+
+func (x *Save) GetBattlesPlayedTotal() int32 {
+	if x != nil {
+		return x.BattlesPlayedTotal
+	}
+	return 0
+}
+
+func (x *Save) GetMoney() int32 {
+	if x != nil {
+		return x.Money
+	}
+	return 0
+}
+
 type Firefly struct {
 	unknownFields []byte
 	Id            int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          int32 `protobuf:"varint,2,opt,name=name,proto3" json:"name,omitempty"`
 	Speed         int32 `protobuf:"varint,3,opt,name=speed,proto3" json:"speed,omitempty"`
 	Nimbleness    int32 `protobuf:"varint,4,opt,name=nimbleness,proto3" json:"nimbleness,omitempty"`
+	BattlesWon    int32 `protobuf:"varint,5,opt,name=battles_won,json=battlesWon,proto3" json:"battlesWon,omitempty"`
+	BattlesPlayed int32 `protobuf:"varint,6,opt,name=battles_played,json=battlesPlayed,proto3" json:"battlesPlayed,omitempty"`
 }
 
 func (x *Firefly) Reset() {
@@ -70,6 +96,20 @@ func (x *Firefly) GetNimbleness() int32 {
 	return 0
 }
 
+func (x *Firefly) GetBattlesWon() int32 {
+	if x != nil {
+		return x.BattlesWon
+	}
+	return 0
+}
+
+func (x *Firefly) GetBattlesPlayed() int32 {
+	if x != nil {
+		return x.BattlesPlayed
+	}
+	return 0
+}
+
 func (m *Save) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
@@ -99,6 +139,21 @@ func (m *Save) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.Money != 0 {
+		i = protobuf_go_lite.EncodeVarint(dAtA, i, uint64(m.Money))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.BattlesPlayedTotal != 0 {
+		i = protobuf_go_lite.EncodeVarint(dAtA, i, uint64(m.BattlesPlayedTotal))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.BattlesWonTotal != 0 {
+		i = protobuf_go_lite.EncodeVarint(dAtA, i, uint64(m.BattlesWonTotal))
+		i--
+		dAtA[i] = 0x10
 	}
 	if len(m.Fireflies) > 0 {
 		for iNdEx := len(m.Fireflies) - 1; iNdEx >= 0; iNdEx-- {
@@ -145,6 +200,16 @@ func (m *Firefly) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.BattlesPlayed != 0 {
+		i = protobuf_go_lite.EncodeVarint(dAtA, i, uint64(m.BattlesPlayed))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.BattlesWon != 0 {
+		i = protobuf_go_lite.EncodeVarint(dAtA, i, uint64(m.BattlesWon))
+		i--
+		dAtA[i] = 0x28
+	}
 	if m.Nimbleness != 0 {
 		i = protobuf_go_lite.EncodeVarint(dAtA, i, uint64(m.Nimbleness))
 		i--
@@ -180,6 +245,15 @@ func (m *Save) SizeVT() (n int) {
 			n += 1 + l + protobuf_go_lite.SizeOfVarint(uint64(l))
 		}
 	}
+	if m.BattlesWonTotal != 0 {
+		n += 1 + protobuf_go_lite.SizeOfVarint(uint64(m.BattlesWonTotal))
+	}
+	if m.BattlesPlayedTotal != 0 {
+		n += 1 + protobuf_go_lite.SizeOfVarint(uint64(m.BattlesPlayedTotal))
+	}
+	if m.Money != 0 {
+		n += 1 + protobuf_go_lite.SizeOfVarint(uint64(m.Money))
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -201,6 +275,12 @@ func (m *Firefly) SizeVT() (n int) {
 	}
 	if m.Nimbleness != 0 {
 		n += 1 + protobuf_go_lite.SizeOfVarint(uint64(m.Nimbleness))
+	}
+	if m.BattlesWon != 0 {
+		n += 1 + protobuf_go_lite.SizeOfVarint(uint64(m.BattlesWon))
+	}
+	if m.BattlesPlayed != 0 {
+		n += 1 + protobuf_go_lite.SizeOfVarint(uint64(m.BattlesPlayed))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -269,6 +349,63 @@ func (m *Save) UnmarshalVT(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BattlesWonTotal", wireType)
+			}
+			m.BattlesWonTotal = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protobuf_go_lite.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BattlesWonTotal |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BattlesPlayedTotal", wireType)
+			}
+			m.BattlesPlayedTotal = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protobuf_go_lite.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BattlesPlayedTotal |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Money", wireType)
+			}
+			m.Money = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protobuf_go_lite.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Money |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := protobuf_go_lite.Skip(dAtA[iNdEx:])
@@ -392,6 +529,44 @@ func (m *Firefly) UnmarshalVT(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.Nimbleness |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BattlesWon", wireType)
+			}
+			m.BattlesWon = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protobuf_go_lite.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BattlesWon |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BattlesPlayed", wireType)
+			}
+			m.BattlesPlayed = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protobuf_go_lite.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BattlesPlayed |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

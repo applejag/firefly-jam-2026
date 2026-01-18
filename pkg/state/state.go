@@ -1,9 +1,10 @@
 package state
 
 import (
+	"fmt"
+
 	"github.com/applejag/firefly-jam-2026/pkg/util"
 	gamev1 "github.com/applejag/firefly-jam-2026/proto/game/v1"
-	"fmt"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -16,18 +17,25 @@ var (
 )
 
 type Firefly struct {
-	ID         int
-	Name       util.Name
-	Speed      int
-	Nimbleness int
+	ID            int
+	Name          util.Name
+	Speed         int
+	Nimbleness    int
+	BattlesPlayed int
+	BattlesWon    int
 }
 
 type GameState struct {
-	Fireflies    []Firefly
+	Fireflies          []Firefly
+	BattlesPlayedTotal int
+	BattlesWonTotal    int
+	Money              int
+
+	// Not saved, it's only ephemeral data
 	InRaceBattle map[firefly.Peer]Firefly
 }
 
-func (g *GameState) AddFirefly() {
+func (g *GameState) AddFirefly() int {
 	nextID++
 	name := util.RandomName()
 	randomness := util.RandomRange(8, 14)
@@ -38,6 +46,7 @@ func (g *GameState) AddFirefly() {
 		Nimbleness: 8 + (14 - randomness),
 	})
 	g.Save()
+	return nextID
 }
 
 func (g *GameState) FindFireflyByID(id int) int {
@@ -63,14 +72,19 @@ func (g *GameState) RemoveMyFireflyFromRaceBattle() {
 
 func (g *GameState) Save() {
 	state := gamev1.Save{
-		Fireflies: make([]*gamev1.Firefly, len(g.Fireflies)),
+		Fireflies:          make([]*gamev1.Firefly, len(g.Fireflies)),
+		BattlesWonTotal:    int32(g.BattlesWonTotal),
+		BattlesPlayedTotal: int32(g.BattlesPlayedTotal),
+		Money:              int32(g.Money),
 	}
 	for i, f := range g.Fireflies {
 		state.Fireflies[i] = &gamev1.Firefly{
-			Id:         int32(f.ID),
-			Name:       int32(f.Name),
-			Speed:      int32(f.Speed),
-			Nimbleness: int32(f.Nimbleness),
+			Id:            int32(f.ID),
+			Name:          int32(f.Name),
+			Speed:         int32(f.Speed),
+			Nimbleness:    int32(f.Nimbleness),
+			BattlesWon:    int32(f.BattlesWon),
+			BattlesPlayed: int32(f.BattlesPlayed),
 		}
 	}
 	b, err := state.MarshalVT()
@@ -97,13 +111,18 @@ func (g *GameState) LoadSave() bool {
 	}
 
 	g.Reset()
+	g.BattlesPlayedTotal = int(state.BattlesPlayedTotal)
+	g.BattlesWonTotal = int(state.BattlesWonTotal)
+	g.Money = int(state.Money)
 	g.Fireflies = make([]Firefly, len(state.Fireflies))
 	for i, f := range state.Fireflies {
 		g.Fireflies[i] = Firefly{
-			ID:         int(f.Id),
-			Name:       util.Name(f.Name),
-			Speed:      int(f.Speed),
-			Nimbleness: int(f.Nimbleness),
+			ID:            int(f.Id),
+			Name:          util.Name(f.Name),
+			Speed:         int(f.Speed),
+			Nimbleness:    int(f.Nimbleness),
+			BattlesWon:    int(f.BattlesWon),
+			BattlesPlayed: int(f.BattlesPlayed),
 		}
 	}
 
@@ -112,7 +131,5 @@ func (g *GameState) LoadSave() bool {
 }
 
 func (g *GameState) Reset() {
-	clear(g.InRaceBattle)
-	clear(g.Fireflies)
-	g.Fireflies = nil
+	*g = GameState{}
 }
