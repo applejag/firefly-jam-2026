@@ -1,11 +1,11 @@
 package game
 
 import (
-	"strconv"
+	"fmt"
+	"strings"
 
 	"github.com/applejag/firefly-jam-2026/assets"
 	"github.com/applejag/firefly-jam-2026/pkg/state"
-	"github.com/applejag/firefly-jam-2026/pkg/util"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -18,6 +18,25 @@ func (u *UI) Render() {
 		return
 	}
 	assets.CashBanner.Draw(firefly.P(2, 2))
-	util.DrawTextRightAligned(assets.FontEG_6x9, "0000", firefly.P(30, 12), firefly.ColorDarkGray)
-	util.DrawTextRightAligned(assets.FontEG_6x9, strconv.Itoa(len(state.Game.Fireflies)), firefly.P(59, 12), firefly.ColorDarkGray)
+	drawRightAlignedWithColoredZeros(
+		assets.FontEG_6x9,
+		fmt.Sprintf("%04d", min(state.Game.Money, 9999)),
+		firefly.P(29, 12),
+		firefly.ColorLightGray,
+		firefly.ColorDarkGray)
+	drawRightAlignedWithColoredZeros(
+		assets.FontEG_6x9,
+		fmt.Sprintf("%02d", min(len(state.Game.Fireflies), 99)),
+		firefly.P(59, 12),
+		firefly.ColorLightGray,
+		firefly.ColorDarkGray)
+}
+
+func drawRightAlignedWithColoredZeros(font firefly.Font, text string, right firefly.Point, zeroColor, textColor firefly.Color) {
+	width := font.LineWidth(text)
+	left := right.Add(firefly.P(-width, 0))
+	withoutZeros := strings.TrimLeft(text, "0")
+	zeros := text[:len(text)-len(withoutZeros)]
+	font.Draw(zeros, left, zeroColor)
+	font.Draw(withoutZeros, left.Add(firefly.P(font.LineWidth(zeros), 0)), textColor)
 }

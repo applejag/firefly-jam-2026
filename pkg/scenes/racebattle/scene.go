@@ -29,7 +29,7 @@ type Scene struct {
 
 	Players      []Firefly
 	Camera       Camera
-	Status       GameStatus
+	status       GameStatus
 	defeatButton DefeatButton
 
 	countdownNum  int
@@ -52,22 +52,19 @@ func (s *Scene) Boot() {
 	s.DefeatSplash.AutoPlay = false
 	s.DefeatSplash.Stop()
 	s.ButtonHighlight = assets.TitleButtonHighlight.Animated(2)
-	s.Status = GameStarting
 }
 
 func (s *Scene) Update() {
-	switch s.Status {
+	switch s.status {
 	case GamePlaying:
 		for i := range s.Players {
 			result := s.Players[i].Update()
 			if result == PathTrackerLooped {
 				isMyPlayer := s.Players[i].IsPlayer && s.Players[i].Peer == state.Input.Me
 				if isMyPlayer {
-					s.Status = GameOverVictory
-					s.VictorySplash.Play()
+					s.changeStatus(GameOverVictory)
 				} else {
-					s.Status = GameOverDefeat
-					s.DefeatSplash.Play()
+					s.changeStatus(GameOverDefeat)
 				}
 			}
 		}
@@ -86,7 +83,7 @@ func (s *Scene) Update() {
 		if s.countdownTime <= 0 {
 			s.countdownNum--
 			if s.countdownNum <= 0 {
-				s.Status = GamePlaying
+				s.changeStatus(GamePlaying)
 			} else {
 				s.countdownTime = 60
 			}
@@ -183,7 +180,7 @@ func (s *Scene) Render() {
 	assets.RacingMapTreetops.Draw(mapPos)
 	s.AnimatedClouds.Draw(mapPos)
 
-	switch s.Status {
+	switch s.status {
 	case GameStarting:
 		center := firefly.P(firefly.Width/2, firefly.Height/2)
 		boxSize := firefly.S(34, 14)
@@ -226,6 +223,45 @@ func (s *Scene) Render() {
 	}
 }
 
+func (s *Scene) changeStatus(newStatus GameStatus) {
+	s.status = newStatus
+	switch newStatus {
+	case GameOverDefeat:
+		s.DefeatSplash.Play()
+
+		if ff, ok := state.Game.InRaceBattle[state.Input.Me]; ok {
+			idx := state.Game.FindFireflyByID(ff.ID)
+			if idx == -1 {
+				panic("this should never happen")
+			}
+			state.Game.Fireflies[idx].BattlesPlayed++
+			state.Game.BattlesPlayedTotal++
+			state.Game.Save()
+		}
+	case GameOverVictory:
+		s.VictorySplash.Play()
+
+		if ff, ok := state.Game.InRaceBattle[state.Input.Me]; ok {
+			idx := state.Game.FindFireflyByID(ff.ID)
+			if idx == -1 {
+				panic("this should never happen")
+			}
+			state.Game.Fireflies[idx].BattlesPlayed++
+			state.Game.Fireflies[idx].BattlesWon++
+			state.Game.BattlesPlayedTotal++
+			state.Game.BattlesWonTotal++
+			state.Game.Money += 10
+			state.Game.Save()
+		}
+	case GamePlaying:
+	case GameStarting:
+		s.countdownNum = 4
+		s.countdownTime = 20
+	default:
+		panic("unexpected racebattle.GameStatus")
+	}
+}
+
 func (s *Scene) OnSceneEnter() {
 	clear(s.Players)
 	s.Players = s.Players[:0]
@@ -241,9 +277,7 @@ func (s *Scene) OnSceneEnter() {
 	s.VictorySplash.Stop()
 	s.DefeatSplash.Stop()
 	s.defeatButton = DefeatButtonBackToField
-	s.Status = GameStarting
-	s.countdownNum = 4
-	s.countdownTime = 20
+	s.changeStatus(GameStarting)
 }
 
 func offsetForPlayer(index int) util.Vec2 {

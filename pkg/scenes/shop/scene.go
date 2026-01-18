@@ -30,9 +30,11 @@ func (s *Scene) Render() {
 }
 
 func (s Scene) OnSceneEnter() {
-	if state.Game.BattlesPlayedTotal == 0 && len(state.Game.Fireflies) == 0 && len(s.Shop.Items) == 0 {
-		// brand new player, they get a free firefly
-		s.Shop.AddFireflyItem(0, 1, assets.ShopItem[6])
+	if state.Game.BattlesPlayedTotal == 0 {
+		if len(state.Game.Fireflies) == 0 && len(s.Shop.Items) == 0 {
+			// brand new player, they get a free firefly
+			s.Shop.AddFireflyItem(0, 1, assets.ShopItem[6])
+		}
 		return
 	}
 

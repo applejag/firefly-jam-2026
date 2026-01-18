@@ -131,5 +131,5 @@ func (g *GameState) LoadSave() bool {
 }
 
 func (g *GameState) Reset() {
-	*g = GameState{}
+	*g = GameState{InRaceBattle: map[firefly.Peer]Firefly{}}
 }
