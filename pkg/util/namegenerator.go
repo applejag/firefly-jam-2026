@@ -24,7 +24,7 @@ var names = []string{
 	"Darkmaw",
 	"Zyrtec ",
 	"Fairlight",
-	"Ophan",
+	"Orphan",
 	"Thunderstorm ",
 	"Calculus",
 	"Xanthanus",
