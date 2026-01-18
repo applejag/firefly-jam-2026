@@ -18,8 +18,8 @@ var (
 	ScrollOpen          util.SpriteSheet
 	tournamentButtonBuf [3037]byte
 	TournamentButton    util.SpriteSheet
-	trainButtonBuf      [205]byte
-	TrainButton         firefly.SubImage
+	trainButtonBuf      [909]byte
+	TrainButton         util.SpriteSheet
 	shopButtonBuf       [629]byte
 	ShopButton          util.SpriteSheet
 
@@ -85,7 +85,7 @@ func Load() {
 	ScrollOpen = slices.Clone(ScrollClose)
 	slices.Reverse(ScrollOpen)
 	TournamentButton = util.SplitImageByCount(firefly.LoadImage("tournament-btn", tournamentButtonBuf[:]), firefly.S(7, 1))
-	TrainButton = firefly.LoadImage("train-btn", trainButtonBuf[:]).Sub(firefly.P(0, 0), firefly.S(19, 16))
+	TrainButton = util.SplitImageBySize(firefly.LoadImage("train-btn", trainButtonBuf[:]), firefly.S(61, 14))
 	ShopButton = util.SplitImageBySize(firefly.LoadImage("shop-btn", shopButtonBuf[:]), firefly.S(42, 14))
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
