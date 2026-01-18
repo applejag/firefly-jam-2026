@@ -177,12 +177,6 @@ func (f *Firefly) Render(scene *Scene) {
 			targetAngle,
 			7,
 			firefly.L(firefly.ColorDarkGreen, 1))
-
-		firefly.DrawLine(
-			point,
-			scene.Camera.WorldVec2ToCameraSpace(f.PathTracker.PeekCurrent()),
-			firefly.L(firefly.ColorBlue, 1),
-		)
 	}
 	// Draw sprite
 	isLookingLeft := tinymath.Abs(util.AngleDifference(firefly.Radians(math.Pi), f.Angle).Radians()) < math.Pi/2
