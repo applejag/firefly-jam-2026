@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/applejag/firefly-jam-2026/assets"
-	"github.com/applejag/firefly-jam-2026/pkg/scenes"
 	"github.com/applejag/firefly-jam-2026/pkg/state"
 	"github.com/applejag/firefly-jam-2026/pkg/util"
 
@@ -13,8 +12,17 @@ import (
 	"github.com/orsinium-labs/tinymath"
 )
 
+type ModalState byte
+
+const (
+	ModalClosed ModalState = iota
+	ModalStats
+	ModalHats
+	ModalTournament
+)
+
 type FireflyModal struct {
-	isOpen          bool
+	state           ModalState
 	scrollOpenAnim  util.AnimatedSheet
 	scrollCloseAnim util.AnimatedSheet
 	scrollSprite    firefly.SubImage
@@ -28,16 +36,17 @@ type FireflyModal struct {
 }
 
 func (m *FireflyModal) IsOpen() bool {
-	return m.isOpen || !m.scrollCloseAnim.IsPaused()
+	return m.state != ModalClosed || !m.scrollCloseAnim.IsPaused()
 }
 
 func (m *FireflyModal) IsClosing() bool {
-	return !m.isOpen && !m.scrollCloseAnim.IsPaused()
+	return m.state == ModalClosed && !m.scrollCloseAnim.IsPaused()
 }
 
 func (m *FireflyModal) Open(firefly *Firefly) {
 	m.scrollOpenAnim.Play()
-	m.isOpen = true
+	m.state = ModalStats
+	m.focused = ButtonNone
 	m.firefly = firefly
 }
 
@@ -48,7 +57,7 @@ func (m *FireflyModal) Close() {
 
 	m.scrollCloseAnim.Play()
 	m.firefly = nil
-	m.isOpen = false
+	m.state = ModalClosed
 }
 
 func (m *FireflyModal) CloseWithoutTransition() {
@@ -58,7 +67,7 @@ func (m *FireflyModal) CloseWithoutTransition() {
 
 	m.scrollCloseAnim.Stop()
 	m.firefly = nil
-	m.isOpen = false
+	m.state = ModalClosed
 }
 
 func (m *FireflyModal) Boot() {
@@ -71,7 +80,6 @@ func (m *FireflyModal) Boot() {
 	m.scrollSprite = assets.ScrollClose[0]
 	m.tournamentAnim = assets.TournamentButton.Animated(6)
 	m.changeHatBtn = NewButton(ButtonChangeHat, "CHANGE HAT")
-	m.changeHatBtn.Disabled = true
 	m.giveVitaminsBtn = NewButton(ButtonGiveVitamins, "GIVE VITAMINS")
 	m.giveVitaminsBtn.Disabled = true
 	m.playTournamentBtn = NewButton(ButtonTournament, "")
@@ -101,29 +109,38 @@ func (m *FireflyModal) Update() {
 func (m *FireflyModal) handleInputDPad4(justPressed firefly.DPad4) {
 	switch justPressed {
 	case firefly.DPad4Up:
-		m.focused = m.focused.Previous()
+		m.focused = m.focused.Up()
 	case firefly.DPad4Down:
-		m.focused = m.focused.Next()
+		m.focused = m.focused.Down()
 	}
 }
 
 func (m *FireflyModal) handleInputButtons(justPressed firefly.Buttons) {
 	switch {
 	case justPressed.E:
-		m.Close()
+		if m.state == ModalStats {
+			m.Close()
+		} else {
+			m.state = ModalStats
+		}
 
 	case justPressed.S:
-		switch m.focused {
-		case ButtonChangeHat:
-			// Shake to signify that the button doesn't work
-			m.changeHatBtn.Shake()
-		case ButtonGiveVitamins:
-			// Shake to signify that the button doesn't work
-			m.giveVitaminsBtn.Shake()
-		case ButtonTournament:
-			state.Game.AddMyFireflyToRaceBattle(m.firefly.id)
-			m.CloseWithoutTransition()
-			scenes.SwitchScene(scenes.RacingTraining)
+		switch m.state {
+		case ModalStats:
+			// yo i heard you like nested switch statements?
+			switch m.focused {
+			case ButtonChangeHat:
+				m.state = ModalHats
+			case ButtonGiveVitamins:
+				// Shake to signify that the button doesn't work
+				m.giveVitaminsBtn.Shake()
+			case ButtonTournament:
+				m.state = ModalTournament
+
+				// state.Game.AddMyFireflyToRaceBattle(m.firefly.id)
+				// m.CloseWithoutTransition()
+				// scenes.SwitchScene(scenes.RacingTraining)
+			}
 		}
 	}
 }
@@ -134,7 +151,7 @@ func (m *FireflyModal) Render() {
 	m.scrollOpenAnim.Draw(point)
 	m.scrollCloseAnim.Draw(point)
 
-	if m.isOpen && m.scrollCloseAnim.IsPaused() && m.scrollOpenAnim.IsPaused() {
+	if m.state != ModalClosed && m.scrollCloseAnim.IsPaused() && m.scrollOpenAnim.IsPaused() {
 		m.renderScroll(point)
 	}
 }
@@ -154,41 +171,46 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 
 	innerScrollPoint := point.Add(firefly.P(21, 20))
 
-	text := util.WordWrap(
-		data.Name.String(),
-		scrollInnerWidth,
-		assets.FontEG_6x9.CharWidth(),
-	)
+	switch m.state {
+	case ModalStats:
+		text := util.WordWrap(
+			data.Name.String(),
+			scrollInnerWidth,
+			assets.FontEG_6x9.CharWidth(),
+		)
 
-	charHeight := assets.FontEG_6x9.CharHeight()
+		charHeight := assets.FontEG_6x9.CharHeight()
 
-	textPos := innerScrollPoint.Add(firefly.P(0, 10))
-	assets.FontEG_6x9.Draw(text, textPos, firefly.ColorDarkGray)
-	textHeight := charHeight * (strings.Count(text, "\n") + 1)
+		textPos := innerScrollPoint.Add(firefly.P(0, 10))
+		assets.FontEG_6x9.Draw(text, textPos, firefly.ColorDarkGray)
+		textHeight := charHeight * (strings.Count(text, "\n") + 1)
 
-	speedPoint := textPos.Add(firefly.P(2, textHeight))
-	assets.FontEG_6x9.Draw(strconv.Itoa(data.Speed), speedPoint, firefly.ColorBlack)
-	assets.FontPico8_4x6.Draw("SPEED", speedPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
+		speedPoint := textPos.Add(firefly.P(2, textHeight))
+		assets.FontEG_6x9.Draw(strconv.Itoa(data.Speed), speedPoint, firefly.ColorBlack)
+		assets.FontPico8_4x6.Draw("SPEED", speedPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
 
-	nimblenessPoint := speedPoint.Add(firefly.P(32, 0))
-	assets.FontEG_6x9.Draw(strconv.Itoa(data.Nimbleness), nimblenessPoint, firefly.ColorBlack)
-	assets.FontPico8_4x6.Draw("NIMBLE", nimblenessPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
+		nimblenessPoint := speedPoint.Add(firefly.P(32, 0))
+		assets.FontEG_6x9.Draw(strconv.Itoa(data.Nimbleness), nimblenessPoint, firefly.ColorBlack)
+		assets.FontPico8_4x6.Draw("NIMBLE", nimblenessPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
 
-	rectPoint := textPos.Add(firefly.P(64, textHeight+4-charHeight))
-	rectSize := firefly.S(22, 22)
-	firefly.DrawRoundedRect(rectPoint, rectSize, firefly.S(3, 3), firefly.Outlined(firefly.ColorGray, 1))
+		rectPoint := textPos.Add(firefly.P(64, textHeight+4-charHeight))
+		rectSize := firefly.S(22, 22)
+		firefly.DrawRoundedRect(rectPoint, rectSize, firefly.S(3, 3), firefly.Outlined(firefly.ColorGray, 1))
 
-	assets.FireflySheet[0].Draw(rectPoint.Add(firefly.P(6, 6)))
+		assets.FireflySheet[0].Draw(rectPoint.Add(firefly.P(6, 6)))
 
-	changeHatPoint := innerScrollPoint.Add(firefly.P(0, scrollInnerHeight-26))
-	m.changeHatBtn.Render(changeHatPoint, m.focused)
+		changeHatPoint := innerScrollPoint.Add(firefly.P(0, scrollInnerHeight-26))
+		m.changeHatBtn.Render(changeHatPoint, m.focused)
 
-	giveVitaminsPoint := changeHatPoint.Add(firefly.P(0, 8))
-	m.giveVitaminsBtn.Render(giveVitaminsPoint, m.focused)
+		giveVitaminsPoint := changeHatPoint.Add(firefly.P(0, 8))
+		m.giveVitaminsBtn.Render(giveVitaminsPoint, m.focused)
 
-	tournamentPoint := giveVitaminsPoint.Add(firefly.P(0, 13))
-	m.tournamentAnim.Draw(tournamentPoint.Add(firefly.P(8, -9)))
-	m.playTournamentBtn.Render(tournamentPoint, m.focused)
+		tournamentPoint := giveVitaminsPoint.Add(firefly.P(0, 13))
+		m.tournamentAnim.Draw(tournamentPoint.Add(firefly.P(8, -9)))
+		m.playTournamentBtn.Render(tournamentPoint, m.focused)
+
+		assets.TrainButton.Draw(tournamentPoint.Add(firefly.P(72, -11)))
+	}
 }
 
 type ButtonKind byte
@@ -202,12 +224,34 @@ const (
 	buttonCount = 4
 )
 
-func (k ButtonKind) Next() ButtonKind {
-	return ButtonKind((byte(k) + 1) % buttonCount)
+func (k ButtonKind) Down() ButtonKind {
+	switch k {
+	case ButtonChangeHat:
+		return ButtonGiveVitamins
+	case ButtonGiveVitamins:
+		return ButtonTournament
+	case ButtonNone:
+		return ButtonChangeHat
+	case ButtonTournament:
+		return ButtonChangeHat
+	default:
+		panic("unexpected field.ButtonKind")
+	}
 }
 
-func (k ButtonKind) Previous() ButtonKind {
-	return ButtonKind((byte(k) + buttonCount - 1) % buttonCount)
+func (k ButtonKind) Up() ButtonKind {
+	switch k {
+	case ButtonChangeHat:
+		return ButtonTournament
+	case ButtonGiveVitamins:
+		return ButtonChangeHat
+	case ButtonNone:
+		return ButtonTournament
+	case ButtonTournament:
+		return ButtonGiveVitamins
+	default:
+		panic("unexpected field.ButtonKind")
+	}
 }
 
 const ButtonShakeDuration = 45
