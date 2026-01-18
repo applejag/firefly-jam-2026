@@ -13,6 +13,7 @@ firefly = { path = "assets/firefly-green-palettized.png" }
 firefly-rev = { path = "assets/firefly-green-palettized-reverse.png" }
 field = { path = "assets/field.png" }
 firefly-hi = { path = "assets/firefly-highlight.png" }
+scroll = { path = "assets/scroll-sheet-reduced.png" }
 racing-map = { path = "assets/race track sheet bg merged.png" }
 racing-map-trees = { path = "assets/race track sheet trees.png" }
 racing-map-treetops = { path = "assets/race track sheet trees top.png" }

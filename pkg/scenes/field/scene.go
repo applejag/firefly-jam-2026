@@ -15,6 +15,7 @@ type Scene struct {
 	buttonsOld firefly.Buttons
 
 	fireflies []Firefly
+	modal     FireflyModal
 
 	highlight util.AnimatedSheet
 	focusedID int
@@ -22,9 +23,15 @@ type Scene struct {
 
 func (s *Scene) Boot() {
 	s.highlight = assets.FireflyHighlight.Animated(2)
+	s.modal.Boot()
 }
 
 func (s *Scene) Update() {
+	if s.modal.IsOpen() {
+		s.modal.Update()
+		return
+	}
+
 	s.highlight.Update()
 	for i := range s.fireflies {
 		s.fireflies[i].Update()
@@ -80,8 +87,13 @@ func (s *Scene) handleInputDPad4(justPressed firefly.DPad4) {
 }
 
 func (s *Scene) handleInputButtons(justPressed firefly.Buttons) {
-	if justPressed.E {
+	switch {
+	case justPressed.E:
 		s.focusedID = -1
+
+	case justPressed.S && s.focusedID != -1 && len(s.fireflies) > 0:
+		idx := s.FindFireflyByID(s.focusedID)
+		s.modal.Open(&s.fireflies[idx])
 	}
 }
 
@@ -91,6 +103,11 @@ func (s *Scene) Render() {
 
 	for i := range s.fireflies {
 		s.fireflies[i].Render()
+	}
+
+	if s.modal.IsOpen() {
+		s.modal.Render()
+		return
 	}
 
 	if len(s.fireflies) > 0 {

@@ -2,6 +2,7 @@ package assets
 
 import (
 	"firefly-jam-2026/pkg/util"
+	"slices"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -11,6 +12,9 @@ var (
 	Field               firefly.Image
 	fireflyHighlightBuf [262]byte
 	FireflyHighlight    util.SpriteSheet
+	scrollBuf           [13895]byte
+	ScrollClose         util.SpriteSheet
+	ScrollOpen          util.SpriteSheet
 
 	racingMapBuf         [192013]byte
 	RacingMap            firefly.Image
@@ -61,9 +65,12 @@ var (
 )
 
 func Load() {
-	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("firefly-hi")))
+	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("scroll")))
 	Field = firefly.LoadImage("field", fieldBuf[:])
 	FireflyHighlight = util.SplitImageBySize(firefly.LoadImage("firefly-hi", fireflyHighlightBuf[:]), firefly.S(32, 32))
+	ScrollClose = util.SplitImageByCount(firefly.LoadImage("scroll", scrollBuf[:]), firefly.S(4, 1))
+	ScrollOpen = slices.Clone(ScrollClose)
+	slices.Reverse(ScrollOpen)
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
 	RacingMapTreetops = firefly.LoadImage("racing-map-treetops", racingMapTreetopsBuf[:])
