@@ -3,16 +3,16 @@ package util
 import "fmt"
 
 func RandomName() Name {
-	return Name{
-		RandomRange(0, len(names)),
-		RandomRange(0, len(titles)),
-	}
+	return Name(
+		(uint32(RandomRange(0, len(names))) << 16) |
+			(uint32(RandomRange(0, len(titles)))),
+	)
 }
 
-type Name [2]int
+type Name uint32
 
 func (n Name) String() string {
-	return fmt.Sprintf("%s %s", names[n[0]], titles[n[1]])
+	return fmt.Sprintf("%s %s", names[n>>16], titles[n&0xff])
 }
 
 var names = []string{
