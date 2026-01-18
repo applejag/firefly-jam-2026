@@ -93,7 +93,7 @@ func (m *FireflyModal) Update() {
 	case ModalStats:
 		m.statsPage.Update(m)
 	case ModalTournament:
-		m.racingPage.Update()
+		m.racingPage.Update(m)
 	}
 
 	if justPressed := state.Input.JustPressedButtons(); justPressed.Any() {

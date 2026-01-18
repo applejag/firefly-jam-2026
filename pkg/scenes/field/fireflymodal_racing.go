@@ -25,7 +25,7 @@ func (p *RacingPage) Boot() {
 	p.tournamentBtn.Font = assets.FontEG_6x9
 }
 
-func (p *RacingPage) Update() {
+func (p *RacingPage) Update(modal *FireflyModal) {
 	p.tournamentAnim.Update()
 	p.trainingAnim.Update()
 
@@ -33,7 +33,7 @@ func (p *RacingPage) Update() {
 		p.handleInputDPad4(justPressed)
 	}
 	if justPressed := state.Input.JustPressedButtons(); justPressed.Any() {
-		p.handleInputButtons(justPressed)
+		p.handleInputButtons(justPressed, modal)
 	}
 }
 
@@ -46,13 +46,17 @@ func (p *RacingPage) handleInputDPad4(justPressed firefly.DPad4) {
 	}
 }
 
-func (p *RacingPage) handleInputButtons(justPressed firefly.Buttons) {
+func (p *RacingPage) handleInputButtons(justPressed firefly.Buttons, modal *FireflyModal) {
 	switch {
 	case justPressed.S:
 		switch p.focused {
 		case RacingTraining:
+			state.Game.AddMyFireflyToRaceBattle(modal.firefly.id)
+			modal.CloseWithoutTransition()
 			scenes.SwitchScene(scenes.RacingTraining)
 		case RacingTournament:
+			state.Game.AddMyFireflyToRaceBattle(modal.firefly.id)
+			modal.CloseWithoutTransition()
 			scenes.SwitchScene(scenes.RacingBattle)
 		}
 	}

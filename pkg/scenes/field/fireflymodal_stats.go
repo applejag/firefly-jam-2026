@@ -61,10 +61,6 @@ func (p *StatsPage) handleInputButtons(justPressed firefly.Buttons, modal *Firef
 			p.giveVitaminsBtn.Shake()
 		case StatsRacing:
 			modal.state = ModalTournament
-
-			// state.Game.AddMyFireflyToRaceBattle(m.firefly.id)
-			// m.CloseWithoutTransition()
-			// scenes.SwitchScene(scenes.RacingTraining)
 		}
 	}
 }
