@@ -7,6 +7,7 @@ uv = "latest"
 "pipx:reuse" = "latest"
 protoc = "33.4"
 protoc-gen-go = "1.36.11"
+"aqua:tinygo-org/tinygo" = "0.40.1"
 
 [tasks."install:tools"]
 description = "Install protoc plugins"
