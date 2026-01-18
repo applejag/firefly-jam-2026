@@ -73,11 +73,46 @@ func (g *GameState) Save() {
 			Nimbleness: int32(f.Nimbleness),
 		}
 	}
-	var buf [100]byte
-	written, err := state.MarshalToVT(buf[:])
+	b, err := state.MarshalVT()
 	if err != nil {
 		panic("failed to marshal save file")
 	}
-	firefly.DumpFile("save", buf[:written])
-	firefly.LogDebug(fmt.Sprint("saved game, size: ", written))
+	firefly.DumpFile("save", b)
+	firefly.LogDebug(fmt.Sprintf("saved game, size: %d B", len(b)))
+}
+
+func (g *GameState) HasSave() bool {
+	return firefly.FileExists("save")
+}
+
+func (g *GameState) LoadSave() bool {
+	file := firefly.LoadFile("save", nil)
+	if !file.Exists() {
+		return false
+	}
+	var state gamev1.Save
+	if err := state.UnmarshalVT(file.Raw); err != nil {
+		firefly.LogError(fmt.Sprintf("failed to load save: %s", err))
+		return false
+	}
+
+	g.Reset()
+	g.Fireflies = make([]Firefly, len(state.Fireflies))
+	for i, f := range state.Fireflies {
+		g.Fireflies[i] = Firefly{
+			ID:         int(f.Id),
+			Name:       util.Name(f.Name),
+			Speed:      int(f.Speed),
+			Nimbleness: int(f.Nimbleness),
+		}
+	}
+
+	firefly.LogDebug(fmt.Sprintf("loaded saved game, size: %d B", len(file.Raw)))
+	return true
+}
+
+func (g *GameState) Reset() {
+	clear(g.InRaceBattle)
+	clear(g.Fireflies)
+	g.Fireflies = nil
 }
