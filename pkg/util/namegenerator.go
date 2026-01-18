@@ -4,15 +4,15 @@ import "fmt"
 
 func RandomName() Name {
 	return Name{
-		RandomSliceElem(names),
-		RandomSliceElem(titles),
+		RandomRange(0, len(names)),
+		RandomRange(0, len(titles)),
 	}
 }
 
-type Name [2]string
+type Name [2]int
 
 func (n Name) String() string {
-	return fmt.Sprintf("%s %s", n[0], n[1])
+	return fmt.Sprintf("%s %s", names[n[0]], titles[n[1]])
 }
 
 var names = []string{
