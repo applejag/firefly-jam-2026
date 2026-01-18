@@ -15,7 +15,7 @@ const (
 	FPS    = 60
 	FPSInv = 1.0 / FPS
 
-	FireflyAnimationFPS = 30
+	FireflyAnimationFPS = 30.0
 
 	RotationSpeedFactorWhenStill = 5 // 5x faster rotation when still
 
@@ -32,13 +32,13 @@ const (
 	StatsRotationSpeedFactor = 8.0 / FPS // div by FPS to make it "per second"
 
 	MoveAwayFromEachOtherSpeed     = 0.3
-	MoveAwayFromEachOtherThreshold = 5
+	MoveAwayFromEachOtherThreshold = 5.0
 
 	/// Acceleration from 0 to max speed, in %/frame
 	MoveAcceleration = FPSInv / 4.5 // 0%-100% in 4.5sec
 
 	// Deacceleration (break force) to go from max speed to 0, in %/frame
-	MoveDeacceleration = FPSInv / 1 // 100%-0% in 1sec
+	MoveDeacceleration = FPSInv / 1.0 // 100%-0% in 1sec
 )
 
 type Firefly struct {
