@@ -15,6 +15,7 @@ type FireflyModal struct {
 	scrollOpenAnim  util.AnimatedSheet
 	scrollCloseAnim util.AnimatedSheet
 	scrollSprite    firefly.SubImage
+	tournamentAnim  util.AnimatedSheet
 	firefly         *Firefly
 }
 
@@ -50,11 +51,13 @@ func (m *FireflyModal) Boot() {
 	m.scrollCloseAnim.AutoPlay = false
 	m.scrollCloseAnim.Stop()
 	m.scrollSprite = assets.ScrollClose[0]
+	m.tournamentAnim = assets.TournamentButton.Animated(6)
 }
 
 func (m *FireflyModal) Update() {
 	m.scrollOpenAnim.Update()
 	m.scrollCloseAnim.Update()
+	m.tournamentAnim.Update()
 
 	if m.IsClosing() {
 		return
@@ -88,6 +91,7 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 	data := state.Game.Fireflies[dataIndex]
 
 	const scrollInnerWidth = 92
+	const scrollInnerHeight = 92
 
 	innerScrollPoint := point.Add(firefly.P(21, 20))
 
@@ -116,4 +120,14 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 	firefly.DrawRoundedRect(rectPoint, rectSize, firefly.S(3, 3), firefly.Outlined(firefly.ColorGray, 1))
 
 	assets.FireflySheet[0].Draw(rectPoint.Add(firefly.P(6, 6)))
+
+	changeHatPoint := innerScrollPoint.Add(firefly.P(0, scrollInnerHeight-30))
+	assets.FontPico8_4x6.Draw("- CHANGE HAT", changeHatPoint, firefly.ColorGray)
+
+	giveVitaminsPoint := changeHatPoint.Add(firefly.P(0, 9))
+	assets.FontPico8_4x6.Draw("> GIVE VITAMINS", giveVitaminsPoint, firefly.ColorBlack)
+
+	tournamentPoint := giveVitaminsPoint.Add(firefly.P(0, 14))
+	m.tournamentAnim.Draw(tournamentPoint.Add(firefly.P(8, -9)))
+	assets.FontPico8_4x6.Draw("-", tournamentPoint, firefly.ColorGray)
 }

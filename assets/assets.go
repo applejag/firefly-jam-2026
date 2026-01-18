@@ -15,6 +15,8 @@ var (
 	scrollBuf           [16375]byte
 	ScrollClose         util.SpriteSheet
 	ScrollOpen          util.SpriteSheet
+	tournamentButtonBuf [3037]byte
+	TournamentButton    util.SpriteSheet
 
 	racingMapBuf         [192013]byte
 	RacingMap            firefly.Image
@@ -65,12 +67,13 @@ var (
 )
 
 func Load() {
-	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("scroll")))
+	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("tournament-btn")))
 	Field = firefly.LoadImage("field", fieldBuf[:])
 	FireflyHighlight = util.SplitImageBySize(firefly.LoadImage("firefly-hi", fireflyHighlightBuf[:]), firefly.S(32, 32))
 	ScrollClose = util.SplitImageByCount(firefly.LoadImage("scroll", scrollBuf[:]), firefly.S(4, 1))
 	ScrollOpen = slices.Clone(ScrollClose)
 	slices.Reverse(ScrollOpen)
+	TournamentButton = util.SplitImageByCount(firefly.LoadImage("tournament-btn", tournamentButtonBuf[:]), firefly.S(7, 1))
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
 	RacingMapTreetops = firefly.LoadImage("racing-map-treetops", racingMapTreetopsBuf[:])
