@@ -20,7 +20,6 @@ func boot() {
 	assets.Load()
 
 	state.Input.Boot()
-	// scenemanager.SwitchSceneNoTransition(scenes.Shop)
 	scenemanager.Boot()
 }
 
