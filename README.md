@@ -11,7 +11,7 @@ SPDX-License-Identifier: CC0-1.0
 Game written in [Go](https://go.dev/) (with [TinyGo](https://tinygo.org/))
 for the [Firefly Zero Jam #1](https://itch.io/jam/firefly-jam).
 
-![main menu screenshot](./docs/screenshot.gif)
+![main menu screenshot](./docs/startmenu.gif)
 
 Jam theme: firefly
 
