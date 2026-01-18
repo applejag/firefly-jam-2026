@@ -3,6 +3,8 @@ package util
 import (
 	"bytes"
 	"strings"
+
+	"github.com/firefly-zero/firefly-go/firefly"
 )
 
 func WordWrap(s string, maxWidth, charWidth int) string {
@@ -32,4 +34,14 @@ func WordWrap(s string, maxWidth, charWidth int) string {
 		sb.WriteString(word)
 	}
 	return sb.String()
+}
+
+func DrawTextRightAligned(font firefly.Font, text string, right firefly.Point, color firefly.Color) {
+	width := font.CharWidth() * len(text)
+	font.Draw(text, right.Add(firefly.P(-width, 0)), color)
+}
+
+func DrawTextCentered(font firefly.Font, text string, center firefly.Point, color firefly.Color) {
+	width := font.CharWidth() * len(text)
+	font.Draw(text, center.Add(firefly.P(-width/2, 0)), color)
 }

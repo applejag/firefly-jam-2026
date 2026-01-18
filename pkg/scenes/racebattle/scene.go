@@ -29,6 +29,9 @@ type Scene struct {
 	Camera  Camera
 	Status  GameStatus
 
+	countdownNum  int
+	countdownTime int
+
 	// Placement among all competitors.
 	//
 	// - 1 means 1st place
@@ -39,10 +42,10 @@ type Scene struct {
 
 func (s *Scene) Boot() {
 	s.AnimatedClouds = assets.RacingMapClouds.Animated(2)
-	s.VictorySplash = assets.VictorySplash.Animated(6)
+	s.VictorySplash = assets.VictorySplash.Animated(12)
 	s.VictorySplash.AutoPlay = false
 	s.DefeatSplash.Stop()
-	s.DefeatSplash = assets.DefeatSplash.Animated(6)
+	s.DefeatSplash = assets.DefeatSplash.Animated(12)
 	s.DefeatSplash.AutoPlay = false
 	s.DefeatSplash.Stop()
 	s.Status = GameStarting
@@ -76,7 +79,15 @@ func (s *Scene) Update() {
 
 	case GameStarting:
 		// TODO: we should start in "GameStarting", and do a countdown
-		s.Status = GamePlaying
+		s.countdownTime--
+		if s.countdownTime <= 0 {
+			s.countdownNum--
+			if s.countdownNum <= 0 {
+				s.Status = GamePlaying
+			} else {
+				s.countdownTime = 60
+			}
+		}
 
 	case GameOverVictory:
 		s.VictorySplash.Update()
@@ -139,6 +150,25 @@ func (s *Scene) Render() {
 	s.AnimatedClouds.Draw(mapPos)
 
 	switch s.Status {
+	case GameStarting:
+		center := firefly.P(firefly.Width/2, firefly.Height/2)
+		boxSize := firefly.S(34, 14)
+		boxPos := firefly.P(center.X-boxSize.W/2, center.Y-boxSize.H/2-2)
+		switch s.countdownNum {
+		case 3:
+			firefly.DrawRoundedRect(boxPos, boxSize, firefly.S(3, 3), firefly.Solid(firefly.ColorBlack))
+			util.DrawTextCentered(assets.FontEG_6x9, "[ 3 ]", center.Add(firefly.P(1, 1)), firefly.ColorDarkGray)
+			util.DrawTextCentered(assets.FontEG_6x9, "[ 3 ]", center, firefly.ColorLightGray)
+		case 2:
+			firefly.DrawRoundedRect(boxPos, boxSize, firefly.S(3, 3), firefly.Solid(firefly.ColorBlack))
+			util.DrawTextCentered(assets.FontEG_6x9, "[ 2 ]", center.Add(firefly.P(1, 1)), firefly.ColorGray)
+			util.DrawTextCentered(assets.FontEG_6x9, "[ 2 ]", center, firefly.ColorWhite)
+		case 1:
+			firefly.DrawRoundedRect(boxPos, boxSize, firefly.S(3, 3), firefly.Solid(firefly.ColorBlack))
+			util.DrawTextCentered(assets.FontEG_6x9, "[ 1 ]", center.Add(firefly.P(1, 1)), firefly.ColorGray)
+			util.DrawTextCentered(assets.FontEG_6x9, "[ 1 ]", center, firefly.ColorYellow)
+		}
+
 	case GamePlaying:
 		if s.myPlayerPlace >= 1 && s.myPlayerPlace <= 3 {
 			assets.RacingPlace[s.myPlayerPlace-1].Draw(firefly.P(firefly.Width-28-4, 4))
@@ -166,6 +196,8 @@ func (s *Scene) OnSceneEnter() {
 	s.VictorySplash.Stop()
 	s.DefeatSplash.Stop()
 	s.Status = GameStarting
+	s.countdownNum = 4
+	s.countdownTime = 20
 }
 
 func offsetForPlayer(index int) util.Vec2 {
