@@ -3,6 +3,7 @@ package assets
 import (
 	"firefly-jam-2026/pkg/util"
 	"slices"
+	"strconv"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -17,6 +18,8 @@ var (
 	ScrollOpen          util.SpriteSheet
 	tournamentButtonBuf [3037]byte
 	TournamentButton    util.SpriteSheet
+	shopButtonBuf       [629]byte
+	ShopButton          util.SpriteSheet
 
 	racingMapBuf         [192013]byte
 	RacingMap            firefly.Image
@@ -67,13 +70,14 @@ var (
 )
 
 func Load() {
-	// firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("tournament-btn")))
+	firefly.LogDebug(strconv.Itoa(firefly.GetFileSize("shop-btn")))
 	Field = firefly.LoadImage("field", fieldBuf[:])
 	FireflyHighlight = util.SplitImageBySize(firefly.LoadImage("firefly-hi", fireflyHighlightBuf[:]), firefly.S(32, 32))
 	ScrollClose = util.SplitImageByCount(firefly.LoadImage("scroll", scrollBuf[:]), firefly.S(4, 1))
 	ScrollOpen = slices.Clone(ScrollClose)
 	slices.Reverse(ScrollOpen)
 	TournamentButton = util.SplitImageByCount(firefly.LoadImage("tournament-btn", tournamentButtonBuf[:]), firefly.S(7, 1))
+	ShopButton = util.SplitImageBySize(firefly.LoadImage("shop-btn", shopButtonBuf[:]), firefly.S(42, 14))
 	RacingMap = firefly.LoadImage("racing-map", racingMapBuf[:])
 	RacingMapTrees = firefly.LoadImage("racing-map-trees", racingMapTreesBuf[:])
 	RacingMapTreetops = firefly.LoadImage("racing-map-treetops", racingMapTreetopsBuf[:])

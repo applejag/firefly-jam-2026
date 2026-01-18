@@ -3,6 +3,7 @@ package field
 import (
 	"cmp"
 	"firefly-jam-2026/assets"
+	"firefly-jam-2026/pkg/scenes"
 	"firefly-jam-2026/pkg/state"
 	"firefly-jam-2026/pkg/util"
 	"slices"
@@ -17,12 +18,14 @@ type Scene struct {
 	fireflies []Firefly
 	modal     FireflyModal
 
-	highlight util.AnimatedSheet
-	focusedID int
+	highlight      util.AnimatedSheet
+	shopButtonAnim util.AnimatedSheet
+	focusedID      int
 }
 
 func (s *Scene) Boot() {
 	s.highlight = assets.FireflyHighlight.Animated(2)
+	s.shopButtonAnim = assets.ShopButton.Animated(3)
 	s.modal.Boot()
 }
 
@@ -32,6 +35,7 @@ func (s *Scene) Update() {
 		return
 	}
 
+	s.shopButtonAnim.Update()
 	s.highlight.Update()
 	for i := range s.fireflies {
 		s.fireflies[i].Update()
@@ -94,6 +98,9 @@ func (s *Scene) handleInputButtons(justPressed firefly.Buttons) {
 	case justPressed.S && s.focusedID != -1 && len(s.fireflies) > 0:
 		idx := s.FindFireflyByID(s.focusedID)
 		s.modal.Open(&s.fireflies[idx])
+
+	case justPressed.N:
+		scenes.SwitchScene(scenes.Shop)
 	}
 }
 
@@ -115,6 +122,8 @@ func (s *Scene) Render() {
 			s.renderFocused(s.fireflies[idx])
 		}
 	}
+
+	s.shopButtonAnim.Draw(firefly.P(firefly.Width-46, firefly.Height-16))
 }
 
 func (s *Scene) renderFocused(f Firefly) {
