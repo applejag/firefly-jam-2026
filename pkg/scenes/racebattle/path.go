@@ -4,8 +4,6 @@ import (
 	"github.com/applejag/firefly-jam-2026/pkg/util"
 )
 
-const PathToCurrentThresholdSquared = 60 * 60
-
 var path = Path{
 	util.V(40, 414),
 	util.V(42, 434),
