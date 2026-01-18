@@ -30,4 +30,6 @@ Enter the race battle map alone.
   
   - faster gives more points
 
+## Shopping
 
+- Can't shop until you've played at least one training
