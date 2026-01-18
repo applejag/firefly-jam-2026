@@ -88,6 +88,10 @@ func (p *PathTracker) PeekSoftNext(from util.Vec2) util.Vec2 {
 	next := p.PeekNext()
 	prev := p.PeekPrevious()
 
+	// TODO: this implementation is a little buggy
+	// it's not smooth at all when it switches checkpoints.
+	// Maybe if we checked the distance to a point that's projected on a line
+	// that's perpendicular with the prev->current line and that crosses the current target.
 	distSqToCurrent := current.Sub(from).RadiusSquared()
 	distSqFromPrev := current.Sub(prev).RadiusSquared()
 	distWeight := 1 - min(distSqToCurrent/distSqFromPrev, 1)
