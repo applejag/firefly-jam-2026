@@ -73,7 +73,7 @@ func (s *Scene) OnSceneEnter() {
 	for peer := range state.Game.InRaceBattle {
 		s.Players = append(s.Players, NewFireflyPlayer(peer, util.V(41, 390).Add(offsetForPlayer(len(s.Players))), firefly.Degrees(271)))
 	}
-	for len(s.Players) < 2 {
+	if len(s.Players) < 2 {
 		s.Players = append(s.Players, NewFireflyAI(util.V(41, 390).Add(offsetForPlayer(len(s.Players))), firefly.Degrees(271)))
 	}
 	s.Camera.Update(s)
