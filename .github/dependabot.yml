@@ -12,6 +12,8 @@ updates:
       all:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "gomod"
     directory: "/"
@@ -21,3 +23,5 @@ updates:
       all:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
