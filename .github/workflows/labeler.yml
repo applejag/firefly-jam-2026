@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Kalle Fagerberg
+#
+# SPDX-License-Identifier: CC0-1.0
+
 name: "Pull Request Labeler"
 on:
   # Using "pull_request_target" is generally a security hole, but only
