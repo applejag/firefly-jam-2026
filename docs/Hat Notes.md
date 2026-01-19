@@ -22,4 +22,3 @@ Duck Hat
 - "quack or wot ever"
 Apple
 - "if i had hands i could shoot that off ur head."
-
