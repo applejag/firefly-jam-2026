@@ -39,7 +39,12 @@ depends = ['build:generate']
 
 [tasks.start]
 description = "Run the game using firefly emulator"
-run = "firefly-emulator --id applejag.firefly-jam-2026"
+run = "firefly-emulator --id applejag.ewfg"
+depends = ['build']
+
+[tasks.package]
+description = "Export the game to a ROM file"
+run = "mkdir -p dist && ff export --output dist/applejag.ewfg.zip"
 depends = ['build']
 
 [tasks.test]

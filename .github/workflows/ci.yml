@@ -57,8 +57,6 @@ jobs:
         run: gotestsum ./...
 
       - uses: jdx/mise-action@c53b9236f0b3370f31520f8b142f141256d839c6 # v3.6.0
-        with:
-          install_args: aqua:tinygo-org/tinygo protoc protoc-gen-go github:firefly-zero/firefly-cli
 
       - name: try build
         run: |

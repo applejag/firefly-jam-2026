@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: 2026 Kalle Fagerberg
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: release
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      # Required to upload binaries to GitHub releases
+      contents: write
+      # Required for signing (sigstore)
+      attestations: write
+      # Required for using GitHub IdP (when signing)
+      id-token: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - name: setup go
+        uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+        with:
+          go-version-file: go.mod
+          cache: false # no cache to avoid cache-poisoning: https://docs.zizmor.sh/audits/#cache-poisoning
+
+      - uses: jdx/mise-action@c53b9236f0b3370f31520f8b142f141256d839c6 # v3.6.0
+        with:
+          cache: false # no cache to avoid cache-poisoning: https://docs.zizmor.sh/audits/#cache-poisoning
+
+      - name: create package
+        run: |
+          mise run package
+
+      - name: attest release artifacts
+        uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        with:
+          subject-path: "dist/*.zip"
+
+      - name: upload assets to release
+        run: |
+          gh release upload "$GITHUB_REF_NAME" -- dist/*.zip
