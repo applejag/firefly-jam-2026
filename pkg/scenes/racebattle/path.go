@@ -1,7 +1,7 @@
 package racebattle
 
 import (
-	"github.com/applejag/firefly-jam-2026/pkg/util"
+	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
 )
 
 var path = Path{

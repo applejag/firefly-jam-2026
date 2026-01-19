@@ -19,7 +19,7 @@ Jam theme: firefly
 
 I originally tried creating this game in [MoonBit](https://www.moonbitlang.com/)
 but I had so many compiler bugs that I ended up giving up and started porting
-the game over to Go. See the [`moon-wasm-bug*` tags](https://github.com/applejag/firefly-jam-2026/tags)
+the game over to Go. See the [`moon-wasm-bug*` tags](https://github.com/applejag/epic-wizard-firefly-gladiators/tags)
 on this repo.
 
 ## Credits

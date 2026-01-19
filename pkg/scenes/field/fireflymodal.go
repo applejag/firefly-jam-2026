@@ -1,9 +1,9 @@
 package field
 
 import (
-	"github.com/applejag/firefly-jam-2026/assets"
-	"github.com/applejag/firefly-jam-2026/pkg/state"
-	"github.com/applejag/firefly-jam-2026/pkg/util"
+	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
+	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/state"
+	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )

@@ -1,7 +1,7 @@
 package field
 
 import (
-	"github.com/applejag/firefly-jam-2026/assets"
+	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
 	"github.com/firefly-zero/firefly-go/firefly"
 	"github.com/orsinium-labs/tinymath"
 )
