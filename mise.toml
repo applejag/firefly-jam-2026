@@ -42,6 +42,11 @@ description = "Run the game using firefly emulator"
 run = "firefly-emulator --id applejag.firefly-jam-2026"
 depends = ['build']
 
+[tasks.package]
+description = "Export the game to a ROM file"
+run = "mkdir -p dist && ff export --output dist/applejag.firefly-jam-2026.zip"
+depends = ['build']
+
 [tasks.test]
 description = "Run tests"
 run = "go test ./..."

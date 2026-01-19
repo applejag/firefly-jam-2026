@@ -7,8 +7,10 @@ _build/
 target
 .mooncakes/
 .moonagent/
+dist/
 
 *.exe
 *.wat
 *.wasm
 *.mi
+*.zip
