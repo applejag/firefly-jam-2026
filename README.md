@@ -6,8 +6,8 @@ SPDX-License-Identifier: CC0-1.0
 
 # Epic Wizard Firefly Gladiators
 
-[https://img.shields.io/github/v/release/applejag/epic-wizard-firefly-gladiators](https://github.com/applejag/epic-wizard-firefly-gladiators/releases)
-[https://img.shields.io/github/downloads/applejag/epic-wizard-firefly-gladiators/total](https://github.com/applejag/epic-wizard-firefly-gladiators/releases)
+[![latest version](https://img.shields.io/github/v/release/applejag/epic-wizard-firefly-gladiators)](https://github.com/applejag/epic-wizard-firefly-gladiators/releases)
+[![download count](https://img.shields.io/github/downloads/applejag/epic-wizard-firefly-gladiators/total)](https://github.com/applejag/epic-wizard-firefly-gladiators/releases)
 [![NO AI](https://raw.githubusercontent.com/nuxy/no-ai-badge/master/badge.svg)](https://github.com/nuxy/no-ai-badge)
 [![REUSE status](https://api.reuse.software/badge/github.com/applejag/epic-wizard-firefly-gladiators)](https://api.reuse.software/info/github.com/applejag/epic-wizard-firefly-gladiators)
 
