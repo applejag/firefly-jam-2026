@@ -37,6 +37,13 @@ description = "Build the game using firefly CLI"
 run = "ff build"
 depends = ['build:generate']
 
+[tasks."build:print-allocs"]
+description = "Build with tinygo and print allocations"
+run = """
+    tinygo build -print-allocs "$(basename "$PWD")" -buildmode c-shared -target target.json -o /dev/null \
+        2>&1 | sed "s|^$PWD/|./|"
+"""
+
 [tasks.start]
 description = "Run the game using firefly emulator"
 run = "firefly-emulator --id applejag.ewfg"
