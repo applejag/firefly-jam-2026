@@ -40,8 +40,8 @@ depends = ['build:generate']
 [tasks."build:print-allocs"]
 description = "Build with tinygo and print allocations"
 run = """
-    tinygo build -print-allocs "$(basename "$PWD")" -buildmode c-shared -target target.json -o /dev/null \
-        2>&1 | sed "s|^$PWD/|./|"
+    tinygo build -print-allocs "$(basename "$PWD")|firefly-go" -buildmode c-shared -target target.json -o /dev/null \
+        2>&1 | sed "s|^$PWD/|./|; s|^$HOME/|~/|"
 """
 
 [tasks.start]
