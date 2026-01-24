@@ -5,6 +5,7 @@ import (
 
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
 	gamev1 "github.com/applejag/epic-wizard-firefly-gladiators/proto/game/v1"
+	"github.com/applejag/firefly-go-math/ffrand"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -39,7 +40,7 @@ type GameState struct {
 func (g *GameState) AddFirefly() int {
 	nextID++
 	name := util.RandomName()
-	randomness := util.RandomRange(8, 14)
+	randomness := 8 + ffrand.Intn(14-8)
 	g.Fireflies = append(g.Fireflies, Firefly{
 		ID:         nextID,
 		Name:       name,

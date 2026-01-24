@@ -2,6 +2,7 @@ package racebattle
 
 import (
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
+	"github.com/applejag/firefly-go-math/ffmath"
 )
 
 var path = Path{
@@ -106,8 +107,8 @@ func (p *PathTracker) PeekSoftNext(currentPos util.Vec2) util.Vec2 {
 	distWeight := 1 - min(distSqToCurrent/distSqFromPrev, 1)
 
 	return util.V(
-		util.Lerp(currentTarget.X, nextTarget.X, distWeight),
-		util.Lerp(currentTarget.Y, nextTarget.Y, distWeight),
+		ffmath.Lerp(currentTarget.X, nextTarget.X, distWeight),
+		ffmath.Lerp(currentTarget.Y, nextTarget.Y, distWeight),
 	)
 }
 

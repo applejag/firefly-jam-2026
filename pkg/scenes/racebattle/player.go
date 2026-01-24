@@ -6,6 +6,8 @@ import (
 	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/state"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
+	"github.com/applejag/firefly-go-math/ffmath"
+	"github.com/applejag/firefly-go-math/ffrand"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 	"github.com/orsinium-labs/tinymath"
@@ -76,7 +78,7 @@ func NewFireflyPlayer(peer firefly.Peer, stats state.Firefly, pos util.Vec2, ang
 func NewFireflyBot(pos util.Vec2, angle firefly.Angle) Firefly {
 	// Randomize skills
 	// These skills must be better than the starting score when buying a basic firefly
-	speed := util.RandomRange(12, 18)
+	speed := 12 + ffrand.Intn(18-12)
 	nimbleness := 12 + (18 - speed)
 	return Firefly{
 		IsPlayer:       false,
@@ -170,18 +172,18 @@ func (f *Firefly) updateBotInput() {
 
 func (f *Firefly) updateSpeedFactor(target float32) {
 	if target > f.SpeedFactor {
-		f.SpeedFactor = util.MoveTowards(f.SpeedFactor, target, MoveAcceleration)
+		f.SpeedFactor = ffmath.MoveTowards(f.SpeedFactor, target, MoveAcceleration)
 	} else {
-		f.SpeedFactor = util.MoveTowards(f.SpeedFactor, target, MoveDeacceleration)
+		f.SpeedFactor = ffmath.MoveTowards(f.SpeedFactor, target, MoveDeacceleration)
 	}
 }
 
 func (f *Firefly) updateAngle(target firefly.Angle) {
-	rotationSpeedDeg := util.Lerp(
+	rotationSpeedDeg := ffmath.Lerp(
 		f.Nimbleness*StatsRotationSpeedFactor*RotationSpeedFactorWhenStill,
 		f.Nimbleness*StatsRotationSpeedFactor,
 		f.SpeedFactor)
-	f.Angle = util.RotateTowards(f.Angle, target, firefly.Degrees(rotationSpeedDeg))
+	f.Angle = ffmath.RotateTowards(f.Angle, target, firefly.Degrees(rotationSpeedDeg))
 }
 
 func (f *Firefly) Render(scene *Scene) {
@@ -200,7 +202,7 @@ func (f *Firefly) Render(scene *Scene) {
 			firefly.L(firefly.ColorDarkGreen, 1))
 	}
 	// Draw sprite
-	isLookingLeft := tinymath.Abs(util.AngleDifference(firefly.Radians(math.Pi), f.Angle).Radians()) < math.Pi/2
+	isLookingLeft := tinymath.Abs(ffmath.AngleDifference(firefly.Radians(math.Pi), f.Angle).Radians()) < math.Pi/2
 	spritePos := point.Sub(firefly.P(4, 5))
 	if isLookingLeft {
 		f.SpriteSheetRev.Draw(spritePos)

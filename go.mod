@@ -4,6 +4,7 @@ go 1.25.5
 
 require (
 	github.com/aperturerobotics/protobuf-go-lite v0.11.0
+	github.com/applejag/firefly-go-math v0.1.0
 	github.com/firefly-zero/firefly-go v0.10.0
 	github.com/orsinium-labs/tinymath v1.1.0
 )

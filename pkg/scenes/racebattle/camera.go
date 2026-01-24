@@ -4,6 +4,7 @@ import (
 	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/state"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
+	"github.com/applejag/firefly-go-math/ffmath"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -31,8 +32,8 @@ func (c *Camera) Update(scene *Scene) {
 		if player.IsPlayer && player.Peer == state.Input.Me {
 			c.pos = player.Pos.Sub(util.V(ScreenWidthHalf, ScreenHeightHalf))
 
-			c.pos.X = util.Clamp(c.pos.X, 0, float32(assets.RacingMap.Width()-firefly.Width))
-			c.pos.Y = util.Clamp(c.pos.Y, 0, float32(assets.RacingMap.Height()-firefly.Height))
+			c.pos.X = ffmath.Clamp(c.pos.X, 0, float32(assets.RacingMap.Width()-firefly.Width))
+			c.pos.Y = ffmath.Clamp(c.pos.Y, 0, float32(assets.RacingMap.Height()-firefly.Height))
 			break
 		}
 	}

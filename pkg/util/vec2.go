@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/applejag/firefly-go-math/ffmath"
 	"github.com/firefly-zero/firefly-go/firefly"
 	"github.com/orsinium-labs/tinymath"
 )
@@ -76,7 +77,7 @@ func (v Vec2) Azimuth() firefly.Angle {
 func (v Vec2) MoveTowards(to Vec2, delta float32) Vec2 {
 	vd := to.Sub(v)
 	dist := vd.Radius()
-	if dist <= delta || dist < cmp_epsilon {
+	if dist <= delta || dist < ffmath.Epsilon {
 		return to
 	} else {
 		return v.Add(vd.Scale(delta / dist))

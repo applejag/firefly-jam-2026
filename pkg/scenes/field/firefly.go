@@ -3,6 +3,7 @@ package field
 import (
 	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
+	"github.com/applejag/firefly-go-math/ffrand"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -29,10 +30,10 @@ func NewFirefly(id int) Firefly {
 	sprites := assets.FireflySheet.Animated(FireflyAnimationFPS)
 	spritesRev := assets.FireflySheetRev.Animated(FireflyAnimationFPS)
 
-	hatIdx := util.RandomRange(0, 11) * 2
+	hatIdx := ffrand.Intn(11) * 2
 	spritesHat := assets.FireflyHats[hatIdx : hatIdx+2].Animated(FireflyAnimationFPS)
 	spritesHatRev := assets.FireflyHatsRev[hatIdx : hatIdx+2].Animated(FireflyAnimationFPS)
-	frame := util.RandomRange(0, len(assets.FireflySheet))
+	frame := ffrand.Intn(len(assets.FireflySheet))
 	sprites.SetFrame(frame)
 	spritesRev.SetFrame(frame)
 	spritesHat.SetFrame(frame)
@@ -40,10 +41,10 @@ func NewFirefly(id int) Firefly {
 	return Firefly{
 		id: id,
 		pos: util.V(
-			float32(util.RandomRange(40, firefly.Width-40)),
-			float32(util.RandomRange(30, firefly.Height-30)),
+			float32(40+ffrand.Intn(firefly.Width-40-40)),
+			float32(40+ffrand.Intn(firefly.Height-30-30)),
 		),
-		sleepTicks:    util.RandomRange(FPS*1, FPS*3),
+		sleepTicks:    FPS + ffrand.Intn(FPS*3-FPS),
 		sprites:       sprites,
 		spritesRev:    spritesRev,
 		spritesHat:    spritesHat,
@@ -63,8 +64,8 @@ func (f *Firefly) Update() {
 		if f.sleepTicks <= 0 {
 			f.nextPos = f.pos
 			f.nextPos = util.V(
-				float32(util.RandomRange(40, firefly.Width-40)),
-				float32(util.RandomRange(30, firefly.Height-30)),
+				float32(40+ffrand.Intn(firefly.Width-40-40)),
+				float32(30+ffrand.Intn(firefly.Height-30-30)),
 			)
 		}
 	} else {
@@ -72,7 +73,7 @@ func (f *Firefly) Update() {
 		f.pos = f.pos.MoveTowards(f.nextPos, FireflySpeedPixelsPerTick)
 
 		if f.nextPos.Sub(f.pos).RadiusSquared() < 10 {
-			f.sleepTicks = util.RandomRange(FPS*1, FPS*3)
+			f.sleepTicks = FPS + ffrand.Intn(FPS*3-FPS)
 		}
 	}
 }

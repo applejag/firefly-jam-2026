@@ -1,11 +1,15 @@
 package util
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/applejag/firefly-go-math/ffrand"
+)
 
 func RandomName() Name {
 	return Name(
-		(uint32(RandomRange(0, len(names))) << 16) |
-			(uint32(RandomRange(0, len(titles)))),
+		(uint32(ffrand.Intn(len(names))) << 16) |
+			(uint32(ffrand.Intn(len(titles)))),
 	)
 }
 

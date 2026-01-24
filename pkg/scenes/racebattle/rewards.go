@@ -2,7 +2,7 @@ package racebattle
 
 import (
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/state"
-	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
+	"github.com/applejag/firefly-go-math/ffrand"
 )
 
 type Rewards struct {
@@ -36,7 +36,7 @@ func CalculateRewards(scene *Scene) Rewards {
 		points += 1
 	}
 	// randomize the distribution
-	r.Speed = util.RandomRange(0, points+1)
+	r.Speed = ffrand.Intn(points + 1)
 	r.Nimbleness = points - r.Speed
 	return r
 }

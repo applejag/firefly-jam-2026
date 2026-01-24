@@ -1,6 +1,9 @@
 package util
 
-import "github.com/firefly-zero/firefly-go/firefly"
+import (
+	"github.com/applejag/firefly-go-math/ffmath"
+	"github.com/firefly-zero/firefly-go/firefly"
+)
 
 type SpriteSheet []firefly.SubImage
 
@@ -49,7 +52,7 @@ type AnimatedSheet struct {
 }
 
 func (s *AnimatedSheet) SetFrame(frame int) {
-	s.index = Clamp(frame, 0, len(s.sprites)-1)
+	s.index = ffmath.Clamp(frame, 0, len(s.sprites)-1)
 	s.time = 0
 }
 
