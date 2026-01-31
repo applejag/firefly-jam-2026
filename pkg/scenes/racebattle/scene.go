@@ -143,7 +143,8 @@ func (s *Scene) nudgeFirefliesAwayFromEachOther() {
 
 func (s *Scene) updateMyPlayerPlace() {
 	var myProgress float32
-	for _, player := range s.Players {
+	for i := range s.Players {
+		player := &s.Players[i]
 		if player.IsPlayer && player.Peer == state.Input.Me {
 			myProgress = player.Progress() + float32(player.LoopsDone)
 			break
@@ -151,7 +152,8 @@ func (s *Scene) updateMyPlayerPlace() {
 	}
 
 	var playersWithHigerProgress byte
-	for _, player := range s.Players {
+	for i := range s.Players {
+		player := &s.Players[i]
 		if player.IsPlayer && player.Peer == state.Input.Me {
 			continue
 		}
@@ -171,9 +173,10 @@ func (s *Scene) Render() {
 	assets.RacingMapTrees.Draw(mapPos)
 	// Players
 	var me *Firefly
-	for i, player := range s.Players {
+	for i := range s.Players {
+		player := &s.Players[i]
 		if player.IsPlayer && player.Peer == state.Input.Me {
-			me = &s.Players[i]
+			me = player
 		} else {
 			player.Render(s)
 		}

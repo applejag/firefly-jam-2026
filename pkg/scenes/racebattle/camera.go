@@ -27,7 +27,8 @@ func (c Camera) WorldPointToCameraSpace(pos firefly.Point) firefly.Point {
 }
 
 func (c *Camera) Update(scene *Scene) {
-	for _, player := range scene.Players {
+	for i := range scene.Players {
+		player := &scene.Players[i]
 		if player.IsPlayer && player.Peer == state.Input.Me {
 			c.pos = player.Pos.Sub(ffmath.V(ScreenWidthHalf, ScreenHeightHalf))
 

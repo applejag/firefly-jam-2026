@@ -93,7 +93,8 @@ func (s *Shop) handleInputButtons(justPressed firefly.Buttons) {
 func (s *Shop) Render() {
 	startPos := firefly.P(130, 28)
 	offset := firefly.S(27, 38)
-	for i, item := range s.Items {
+	for i := range s.Items {
+		item := &s.Items[i]
 		pos := startPos.Add(firefly.P((i%4)*offset.W, (i/4)*offset.H))
 		item.Bg.Draw(pos)
 		item.Icon.Draw(pos)
