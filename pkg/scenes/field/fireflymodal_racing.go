@@ -25,6 +25,9 @@ func (p *RacingPage) Boot() {
 	p.tournamentBtn.Font = assets.FontEG_6x9
 }
 
+func (p *RacingPage) OnOpen() {
+}
+
 func (p *RacingPage) Update(modal *FireflyModal) {
 	p.tournamentAnim.Update()
 	p.trainingAnim.Update()

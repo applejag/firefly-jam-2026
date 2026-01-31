@@ -19,7 +19,7 @@ const (
 	ModalClosed ModalState = iota
 	ModalStats
 	ModalHats
-	ModalTournament
+	ModalRacing
 )
 
 type FireflyModal struct {
@@ -43,10 +43,20 @@ func (m *FireflyModal) IsClosing() bool {
 
 func (m *FireflyModal) Open(firefly *Firefly) {
 	m.scrollOpenAnim.Play()
-	m.state = ModalStats
-	m.statsPage.focused = StatsNone
-	m.racingPage.focused = RacingNone
 	m.firefly = firefly
+	m.OpenPage(ModalStats)
+}
+
+func (m *FireflyModal) OpenPage(target ModalState) {
+	m.state = target
+	switch target {
+	case ModalStats:
+		m.statsPage.OnOpen()
+		m.statsPage.focused = StatsNone
+	case ModalRacing:
+		m.racingPage.OnOpen()
+		m.racingPage.focused = RacingNone
+	}
 }
 
 func (m *FireflyModal) Close() {
@@ -92,7 +102,7 @@ func (m *FireflyModal) Update() {
 	switch m.state {
 	case ModalStats:
 		m.statsPage.Update(m)
-	case ModalTournament:
+	case ModalRacing:
 		m.racingPage.Update(m)
 	}
 
@@ -102,7 +112,7 @@ func (m *FireflyModal) Update() {
 			if m.state == ModalStats {
 				m.Close()
 			} else {
-				m.state = ModalStats
+				m.OpenPage(ModalStats)
 			}
 		}
 	}
@@ -128,7 +138,7 @@ func (m *FireflyModal) renderScroll(point firefly.Point) {
 	switch m.state {
 	case ModalStats:
 		m.statsPage.Render(innerScrollPoint, m.firefly.id)
-	case ModalTournament:
+	case ModalRacing:
 		m.racingPage.Render(innerScrollPoint)
 	}
 }

@@ -15,6 +15,10 @@ type StatsPage struct {
 	giveVitaminsBtn   Button
 	playTournamentBtn Button
 	focused           StatsButton
+
+	cachedFireflyNameText string
+	cachedSpeedText       string
+	cachedNimblenessText  string
 }
 
 func (p *StatsPage) Boot() {
@@ -23,6 +27,12 @@ func (p *StatsPage) Boot() {
 	p.giveVitaminsBtn = NewButton("GIVE VITAMINS")
 	p.giveVitaminsBtn.Disabled = true
 	p.playTournamentBtn = NewButton("RACING")
+}
+
+func (p *StatsPage) OnOpen() {
+	p.cachedFireflyNameText = ""
+	p.cachedSpeedText = ""
+	p.cachedNimblenessText = ""
 }
 
 func (p *StatsPage) Update(modal *FireflyModal) {
@@ -60,7 +70,7 @@ func (p *StatsPage) handleInputButtons(justPressed firefly.Buttons, modal *Firef
 			// Shake to signify that the button doesn't work
 			p.giveVitaminsBtn.Shake()
 		case StatsRacing:
-			modal.state = ModalTournament
+			modal.OpenPage(ModalRacing)
 		}
 	}
 }
@@ -72,11 +82,26 @@ func (p *StatsPage) Render(innerScrollPoint firefly.Point, fireflyID int) {
 	}
 	data := state.Game.Fireflies[dataIndex]
 
-	text := util.WordWrap(
-		data.Name.String(),
-		scrollInnerWidth,
-		assets.FontEG_6x9.CharWidth(),
-	)
+	text := p.cachedFireflyNameText
+	if text == "" {
+		text = util.WordWrap(
+			data.Name.String(),
+			scrollInnerWidth,
+			assets.FontEG_6x9.CharWidth(),
+		)
+		p.cachedFireflyNameText = text
+	}
+
+	speedText := p.cachedSpeedText
+	if speedText == "" {
+		speedText = strconv.Itoa(data.Speed)
+		p.cachedSpeedText = speedText
+	}
+	nimblenessText := p.cachedNimblenessText
+	if nimblenessText == "" {
+		nimblenessText = strconv.Itoa(data.Nimbleness)
+		p.cachedNimblenessText = speedText
+	}
 
 	charHeight := assets.FontEG_6x9.CharHeight()
 
@@ -85,11 +110,11 @@ func (p *StatsPage) Render(innerScrollPoint firefly.Point, fireflyID int) {
 	textHeight := charHeight * (strings.Count(text, "\n") + 1)
 
 	speedPoint := textPos.Add(firefly.P(2, textHeight))
-	assets.FontEG_6x9.Draw(strconv.Itoa(data.Speed), speedPoint, firefly.ColorBlack)
+	assets.FontEG_6x9.Draw(speedText, speedPoint, firefly.ColorBlack)
 	assets.FontPico8_4x6.Draw("SPEED", speedPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
 
 	nimblenessPoint := speedPoint.Add(firefly.P(32, 0))
-	assets.FontEG_6x9.Draw(strconv.Itoa(data.Nimbleness), nimblenessPoint, firefly.ColorBlack)
+	assets.FontEG_6x9.Draw(nimblenessText, nimblenessPoint, firefly.ColorBlack)
 	assets.FontPico8_4x6.Draw("NIMBLE", nimblenessPoint.Add(firefly.P(0, charHeight)), firefly.ColorGray)
 
 	rectPoint := textPos.Add(firefly.P(64, textHeight+4-charHeight))

@@ -8,10 +8,8 @@ uv = "latest"
 protoc = "33.4"
 protoc-gen-go = "1.36.11"
 "aqua:tinygo-org/tinygo" = "0.40.1"
-
-[tools."github:firefly-zero/firefly-cli"]
-version = "0.15.7"
-rename_exe = "ff"
+"github:firefly-zero/firefly-cli"= { version = "0.15.8", rename_exe = "ff" }
+"github:firefly-zero/firefly-emulator" = "0.9.8"
 
 [tasks."install:tools"]
 description = "Install protoc plugins"

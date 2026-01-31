@@ -2,11 +2,12 @@ package field
 
 import (
 	"cmp"
+	"slices"
+
 	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/scenes"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/state"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
-	"slices"
 
 	"github.com/firefly-zero/firefly-go/firefly"
 )
@@ -18,6 +19,9 @@ type Scene struct {
 	highlight      util.AnimatedSheet
 	shopButtonAnim util.AnimatedSheet
 	focusedID      int
+
+	cachedFireflyNameText string
+	fireflyIDs            []int
 }
 
 func (s *Scene) Boot() {
@@ -58,21 +62,16 @@ func (s *Scene) handleInputDPad4(justPressed firefly.DPad4) {
 		s.focusedID = s.fireflies[0].id
 		return
 	}
-	ids := make([]int, len(s.fireflies))
-	for i, f := range s.fireflies {
-		ids[i] = f.id
-	}
-	slices.Sort(ids)
-	idsIndex := slices.Index(ids, s.focusedID)
+	idsIndex := slices.Index(s.fireflyIDs, s.focusedID)
 
 	switch justPressed {
 	case firefly.DPad4Down, firefly.DPad4Right:
-		idsIndex = (idsIndex + 1) % len(ids)
+		idsIndex = (idsIndex + 1) % len(s.fireflies)
 	case firefly.DPad4Up, firefly.DPad4Left:
-		idsIndex = (idsIndex + len(ids) - 1) % len(ids)
+		idsIndex = (idsIndex + len(s.fireflies) - 1) % len(s.fireflies)
 	}
 
-	newID := ids[idsIndex]
+	newID := s.fireflyIDs[idsIndex]
 	s.focusedID = newID
 }
 
@@ -122,11 +121,15 @@ func (s *Scene) renderFocused(f Firefly) {
 	}
 	data := state.Game.Fireflies[dataIndex]
 
-	text := util.WordWrap(
-		data.Name.String(),
-		firefly.Width-75,
-		assets.FontEG_6x9.CharWidth(),
-	)
+	text := s.cachedFireflyNameText
+	if text == "" {
+		text = util.WordWrap(
+			data.Name.String(),
+			firefly.Width-75,
+			assets.FontEG_6x9.CharWidth(),
+		)
+		s.cachedFireflyNameText = text
+	}
 
 	assets.FontEG_6x9.Draw(text, firefly.P(73, 12), firefly.ColorDarkGray)
 	assets.FontEG_6x9.Draw(text, firefly.P(73, 11), firefly.ColorWhite)
@@ -152,4 +155,10 @@ func (s *Scene) OnSceneEnter() {
 	s.fireflies = slices.DeleteFunc(s.fireflies, func(f Firefly) bool {
 		return state.Game.FindFireflyByID(f.id) == -1
 	})
+	s.cachedFireflyNameText = ""
+	s.fireflyIDs = make([]int, len(s.fireflies))
+	for i, f := range s.fireflies {
+		s.fireflyIDs[i] = f.id
+	}
+	slices.Sort(s.fireflyIDs)
 }
