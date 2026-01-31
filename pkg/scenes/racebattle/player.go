@@ -38,7 +38,7 @@ const (
 	MoveAwayFromEachOtherThreshold = 5.0
 
 	/// Acceleration from 0 to max speed, in %/frame
-	MoveAcceleration = FPSInv / 4.5 // 0%-100% in 4.5sec
+	MoveAcceleration = FPSInv / 2.5 // 0%-100% in 2.5sec
 
 	// Deacceleration (break force) to go from max speed to 0, in %/frame
 	MoveDeacceleration = FPSInv / 1.0 // 100%-0% in 1sec
