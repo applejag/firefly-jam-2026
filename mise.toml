@@ -5,37 +5,15 @@
 [tools]
 uv = "latest"
 "pipx:reuse" = "latest"
-protoc = "33.4"
-protoc-gen-go = "1.36.11"
 "aqua:tinygo-org/tinygo" = "0.40.1"
 "github:firefly-zero/firefly-cli"= { version = "0.15.8", rename_exe = "ff" }
 "github:firefly-zero/firefly-emulator" = "0.9.8"
 "github:wwwg/wasmdec" = "latest"
 golangci-lint = "2.8.0"
 
-[tasks."install:tools"]
-description = "Install protoc plugins"
-run = "go install tool"
-
-[tasks."build:generate"]
-# using https://github.com/aperturerobotics/protobuf-go-lite
-description = "Generate protobuf files"
-run = """
-    : "${GOBIN:="$(go env GOBIN)"}"
-    : "${GOBIN:="$(go env GOPATH)/bin"}"
-    protoc \
-        --go-lite_out=proto --plugin protoc-gen-go-lite="${GOBIN}/protoc-gen-go-lite" \
-        --go-lite_opt=features=size+marshal+unmarshal \
-        proto/game/v1/gamestate.proto
-"""
-sources = ['proto/game/v1/*.proto']
-outputs = ['proto/game/v1/*.go']
-depends = ['install:tools']
-
 [tasks.build]
 description = "Build the game using firefly CLI"
 run = "ff build"
-depends = ['build:generate']
 
 [tasks."debug:print-allocs"]
 description = "Build with tinygo and print allocations"

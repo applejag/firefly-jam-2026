@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
-	gamev1 "github.com/applejag/epic-wizard-firefly-gladiators/proto/game/v1"
 	"github.com/applejag/firefly-go-math/ffrand"
 
 	"github.com/firefly-zero/firefly-go/firefly"
@@ -73,34 +72,19 @@ func (g *GameState) RemoveMyFireflyFromRaceBattle() {
 }
 
 func (g *GameState) Save() {
-	state := gamev1.Save{
-		Fireflies:          make([]*gamev1.Firefly, len(g.Fireflies)),
-		BattlesWonTotal:    int32(g.BattlesWonTotal),
-		BattlesPlayedTotal: int32(g.BattlesPlayedTotal),
-		Money:              int32(g.Money),
-	}
-	for i, f := range g.Fireflies {
-		state.Fireflies[i] = &gamev1.Firefly{
-			Id:            int32(f.ID),
-			Name:          int32(f.Name),
-			Speed:         int32(f.Speed),
-			Nimbleness:    int32(f.Nimbleness),
-			BattlesWon:    int32(f.BattlesWon),
-			BattlesPlayed: int32(f.BattlesPlayed),
-		}
-	}
-	b, err := state.MarshalVT()
+	var saveBuf [100]byte
+	save, err := g.AppendBinary(saveBuf[:0])
 	if err != nil {
-		panic("failed to marshal save file")
+		firefly.LogError("failed to save: " + err.Error())
+		return
 	}
-	firefly.DumpFile("save", b)
+	firefly.DumpFile("save", save)
 
 	var buf [len("saved game, size: ") + 10 + len(" B")]byte
 	index := copy(buf[0:], "saved game, size: ")
-	index += util.FormatIntInto(buf[index:], len(b))
+	index += util.FormatIntInto(buf[index:], len(save))
 	index += copy(buf[index:], " B")
 	util.LogDebugBytes(buf[:index])
-	panic(12345678)
 }
 
 func (g *GameState) HasSave() bool {
@@ -112,26 +96,10 @@ func (g *GameState) LoadSave() bool {
 	if !file.Exists() {
 		return false
 	}
-	var state gamev1.Save
-	if err := state.UnmarshalVT(file.Raw); err != nil {
+	g.Reset()
+	if err := g.UnmarshalBinary(file.Raw); err != nil {
 		firefly.LogError("failed to load save: " + err.Error())
 		return false
-	}
-
-	g.Reset()
-	g.BattlesPlayedTotal = int(state.BattlesPlayedTotal)
-	g.BattlesWonTotal = int(state.BattlesWonTotal)
-	g.Money = int(state.Money)
-	g.Fireflies = make([]Firefly, len(state.Fireflies))
-	for i, f := range state.Fireflies {
-		g.Fireflies[i] = Firefly{
-			ID:            int(f.Id),
-			Name:          util.Name(f.Name),
-			Speed:         int(f.Speed),
-			Nimbleness:    int(f.Nimbleness),
-			BattlesWon:    int(f.BattlesWon),
-			BattlesPlayed: int(f.BattlesPlayed),
-		}
 	}
 
 	firefly.LogDebug("loaded saved game, size: " + strconv.Itoa(len(file.Raw)) + " B")
