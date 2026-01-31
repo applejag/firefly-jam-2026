@@ -1,7 +1,7 @@
 package state
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/util"
 	gamev1 "github.com/applejag/epic-wizard-firefly-gladiators/proto/game/v1"
@@ -94,7 +94,13 @@ func (g *GameState) Save() {
 		panic("failed to marshal save file")
 	}
 	firefly.DumpFile("save", b)
-	firefly.LogDebug(fmt.Sprintf("saved game, size: %d B", len(b)))
+
+	var buf [len("saved game, size: ") + 10 + len(" B")]byte
+	index := copy(buf[0:], "saved game, size: ")
+	index += util.FormatIntInto(buf[index:], len(b))
+	index += copy(buf[index:], " B")
+	util.LogDebugBytes(buf[:index])
+	panic(12345678)
 }
 
 func (g *GameState) HasSave() bool {
@@ -108,7 +114,7 @@ func (g *GameState) LoadSave() bool {
 	}
 	var state gamev1.Save
 	if err := state.UnmarshalVT(file.Raw); err != nil {
-		firefly.LogError(fmt.Sprintf("failed to load save: %s", err))
+		firefly.LogError("failed to load save: " + err.Error())
 		return false
 	}
 
@@ -128,7 +134,7 @@ func (g *GameState) LoadSave() bool {
 		}
 	}
 
-	firefly.LogDebug(fmt.Sprintf("loaded saved game, size: %d B", len(file.Raw)))
+	firefly.LogDebug("loaded saved game, size: " + strconv.Itoa(len(file.Raw)) + " B")
 	return true
 }
 

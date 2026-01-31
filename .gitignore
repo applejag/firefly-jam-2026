@@ -12,5 +12,6 @@ dist/
 *.exe
 *.wat
 *.wasm
+*.dcmp
 *.mi
 *.zip

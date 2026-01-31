@@ -2,7 +2,6 @@ package racebattle
 
 import (
 	"cmp"
-	"fmt"
 	"slices"
 
 	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
@@ -263,7 +262,16 @@ func (s *Scene) changeStatus(newStatus GameStatus) {
 			state.Game.BattlesPlayedTotal++
 			state.Game.BattlesWonTotal++
 			s.rewards = CalculateRewards(s)
-			s.rewardsText = fmt.Sprintf("+%d speed\n+%d nimble\n+%d money", s.rewards.Speed, s.rewards.Nimbleness, s.rewards.Money)
+
+			var out [len("+") + 2 + len(" speed\n+") + 2 + len(" nimble\n+") + 3 + len(" money")]byte
+			index := copy(out[0:], "+")
+			index += util.FormatIntInto(out[index:], s.rewards.Speed)
+			index += copy(out[index:], " speed\n+")
+			index += util.FormatIntInto(out[index:], s.rewards.Nimbleness)
+			index += copy(out[index:], " nimble\n+")
+			index += util.FormatIntInto(out[index:], s.rewards.Money)
+			s.rewardsText = string(out[:index])
+
 			s.rewards.Apply(&state.Game.Fireflies[idx])
 			state.Game.Save()
 		}

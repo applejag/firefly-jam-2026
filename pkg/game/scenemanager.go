@@ -1,8 +1,6 @@
 package game
 
 import (
-	"fmt"
-
 	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/scenes"
 	"github.com/applejag/epic-wizard-firefly-gladiators/pkg/scenes/field"
@@ -31,10 +29,16 @@ type SceneManager struct {
 
 // SwitchScene implements [scenes.SceneSwitcher].
 func (s *SceneManager) SwitchScene(scene scenes.Scene) {
+	prev := s.currentScene
 	s.nextScene = scene
 	s.Transition.Play()
-	firefly.LogDebug(fmt.Sprintf("switching scene from %q to %q", s.currentScene, scene))
 	s.onSceneSwitch(scene)
+
+	var buf [22 + scenes.LongestSceneName + 6 + scenes.LongestSceneName + 1]byte
+	written := util.ConcatInto(buf[:],
+		"switching scene from '", prev.String(), "' to '", scene.String(), "'",
+	)
+	util.LogDebugBytes(buf[:written])
 }
 
 func (s *SceneManager) SwitchSceneNoTransition(scene scenes.Scene) {
@@ -42,8 +46,13 @@ func (s *SceneManager) SwitchSceneNoTransition(scene scenes.Scene) {
 	s.nextScene = scene
 	s.currentScene = scene
 	s.Transition.Stop()
-	firefly.LogDebug(fmt.Sprintf("switching scene from %q to %q (without transition)", prev, scene))
 	s.onSceneSwitch(scene)
+
+	var buf [22 + scenes.LongestSceneName + 6 + scenes.LongestSceneName + 22]byte
+	written := util.ConcatInto(buf[:],
+		"switching scene from '", prev.String(), "' to '", scene.String(), "' (without transition)",
+	)
+	util.LogDebugBytes(buf[:written])
 }
 
 func (s *SceneManager) Boot() {

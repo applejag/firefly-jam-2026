@@ -123,8 +123,9 @@ func (s *Scene) renderFocused(f Firefly) {
 
 	text := s.cachedFireflyNameText
 	if text == "" {
+		var buf [util.LongestPossibleName]byte
 		text = util.WordWrap(
-			data.Name.String(),
+			string(buf[:data.Name.WriteInto(buf[:])]),
 			firefly.Width-75,
 			assets.FontEG_6x9.CharWidth(),
 		)

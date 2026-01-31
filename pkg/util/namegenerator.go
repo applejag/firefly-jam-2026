@@ -1,8 +1,6 @@
 package util
 
 import (
-	"fmt"
-
 	"github.com/applejag/firefly-go-math/ffrand"
 )
 
@@ -15,9 +13,24 @@ func RandomName() Name {
 
 type Name uint32
 
-func (n Name) String() string {
-	return fmt.Sprintf("%s %s", names[n>>16], titles[n&0xff])
+// Writes the name into the given buffer.
+//
+// Intended usage:
+//
+//	var buf [util.LongestPossibleName]byte
+//	written := name.WriteInto(buf[:])
+//	foobar(string(buf[:written]))
+//
+// Panics if the "buf" is too small.
+func (n Name) WriteInto(buf []byte) int {
+	return ConcatInto(buf, names[n>>16], " ", titles[n&0xff])
 }
+
+const (
+	longestName         = 17
+	longestTitle        = 32
+	LongestPossibleName = longestName + 1 + longestTitle
+)
 
 var names = []string{
 	"Gornash",
@@ -118,11 +131,11 @@ var names = []string{
 	"Ichoris",
 	"Vladriel",
 	"Shmexy",
-	"Blockbuster ",
+	"Blockbuster",
 	"Thalomir",
 	"Rexxy",
 	"Micycle",
-	"Philharmonic ",
+	"Philharmonic",
 	"Prestoff",
 	"Blumpy",
 	"Stephen",

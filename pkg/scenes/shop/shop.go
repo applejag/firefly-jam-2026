@@ -1,7 +1,6 @@
 package shop
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/applejag/epic-wizard-firefly-gladiators/assets"
@@ -64,7 +63,11 @@ func (s *Shop) handleInputButtons(justPressed firefly.Buttons) {
 			return
 		}
 		state.Game.Money -= item.Price
-		firefly.LogDebug("buy 1x: " + item.Kind.String())
+
+		var buf [len("buy 1x: ") + LongestItemKind]byte
+		written := util.ConcatInto(buf[:], "buy 1x: ", item.Kind.String())
+		util.LogDebugBytes(buf[:written])
+
 		switch item.Kind {
 		case ItemDrug:
 		case ItemFirefly:
@@ -101,7 +104,10 @@ func (s *Shop) Render() {
 		}
 		assets.FontPico8_4x6.Draw(item.priceStr, pos.Add(firefly.P(offset.W/2-textWidth/2, offset.H-6)), priceColor)
 		if item.Quantity > 0 {
-			quantityStr := fmt.Sprintf("x%d", item.Quantity)
+			var buf [5]byte
+			buf[0] = 'x'
+			written := util.FormatIntInto(buf[1:], item.Quantity)
+			quantityStr := string(buf[:1+written])
 			quantityWidth := len(quantityStr) * assets.FontPico8_4x6.CharWidth()
 			assets.FontPico8_4x6.Draw(quantityStr, pos.Add(firefly.P(offset.W-quantityWidth-3, 7)), firefly.ColorDarkGray)
 		}
@@ -150,7 +156,10 @@ func formatPrice(price int) string {
 	if price == 0 {
 		return "FREE"
 	}
-	return fmt.Sprintf("$%d", price)
+	var buf [1 + 3]byte
+	buf[0] = '$'
+	written := util.FormatIntInto(buf[1:], price)
+	return string(buf[:1+written])
 }
 
 type Item struct {
@@ -170,7 +179,17 @@ const (
 	ItemFirefly
 	ItemHat
 	ItemDrug
+
+	LongestItemKind = 7
 )
+
+var AllItemKinds = []ItemKind{
+	ItemNone,
+	ItemSell,
+	ItemFirefly,
+	ItemHat,
+	ItemDrug,
+}
 
 func (k ItemKind) String() string {
 	switch k {

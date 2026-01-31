@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/firefly-zero/firefly-go/firefly"
@@ -134,6 +133,6 @@ func colorName(color firefly.Color) string {
 	case firefly.ColorYellow:
 		return "yellow"
 	default:
-		panic(fmt.Sprintf("unexpected firefly.Color: %#v", color))
+		panic("unexpected firefly.Color")
 	}
 }

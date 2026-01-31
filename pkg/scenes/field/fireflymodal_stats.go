@@ -84,8 +84,9 @@ func (p *StatsPage) Render(innerScrollPoint firefly.Point, fireflyID int) {
 
 	text := p.cachedFireflyNameText
 	if text == "" {
+		var buf [util.LongestPossibleName]byte
 		text = util.WordWrap(
-			data.Name.String(),
+			string(buf[:data.Name.WriteInto(buf[:])]),
 			scrollInnerWidth,
 			assets.FontEG_6x9.CharWidth(),
 		)

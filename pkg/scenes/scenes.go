@@ -2,6 +2,19 @@ package scenes
 
 var SwitchScene func(scene Scene)
 
+const (
+	LongestSceneName = 15
+)
+
+var AllScenes = []Scene{
+	MainMenu,
+	Field,
+	Insectarium,
+	Shop,
+	RacingBattle,
+	RacingTraining,
+}
+
 type Scene byte
 
 const (

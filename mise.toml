@@ -10,6 +10,7 @@ protoc-gen-go = "1.36.11"
 "aqua:tinygo-org/tinygo" = "0.40.1"
 "github:firefly-zero/firefly-cli"= { version = "0.15.8", rename_exe = "ff" }
 "github:firefly-zero/firefly-emulator" = "0.9.8"
+"github:wwwg/wasmdec" = "latest"
 
 [tasks."install:tools"]
 description = "Install protoc plugins"
@@ -35,12 +36,76 @@ description = "Build the game using firefly CLI"
 run = "ff build"
 depends = ['build:generate']
 
-[tasks."build:print-allocs"]
+[tasks."debug:print-allocs"]
 description = "Build with tinygo and print allocations"
 run = """
-    tinygo build -print-allocs "$(basename "$PWD")|firefly-go" -buildmode c-shared -target target.json -o /dev/null \
+    tinygo build -print-allocs "$(basename "$PWD")|firefly-go|.*" -buildmode c-shared -target target.json -o /dev/null \
         2>&1 | sed "s|^$PWD/|./|; s|^$HOME/|~/|"
 """
+
+[tasks."debug:build:tinygo"]
+description = "Build with tinygo"
+run = """
+    tinygo build -target target.json -buildmode c-shared -o dist/ewfg.wasm .
+"""
+sources = ['**/*.go', 'go.mod', 'go.sum', 'assets/**']
+outputs = ['dist/ewfg.wasm']
+
+[tasks."debug:build:opt"]
+description = """
+    Optimize the debug binary with wasm-opt
+
+    Basically the same command used by firefly-cli, but with extra `--debuginfo`.
+    https://github.com/firefly-zero/firefly-cli/blob/6bfc4b02369577d5073145ea0c53a6168771907a/src/wasm.rs#L79-L99
+"""
+run = """
+    wasm-opt \
+    -Oz \
+    --disable-exception-handling \
+    --disable-gc \
+    --disable-typed-function-references \
+    --enable-bulk-memory \
+    --enable-extended-const \
+    --enable-memory64 \
+    --enable-multivalue \
+    --enable-mutable-globals \
+    --enable-nontrapping-float-to-int \
+    --enable-reference-types \
+    --enable-relaxed-simd \
+    --enable-sign-ext \
+    --enable-simd \
+    --enable-tail-call \
+    -o dist/ewfg-opt.wasm \
+    --debuginfo \
+    dist/ewfg.wasm
+"""
+wait_for = ['debug:build:tinygo']
+sources = ['dist/ewfg.wasm']
+outputs = ['dist/ewfg-opt.wasm']
+
+[tasks."debug:build"]
+description = "Build and optimize the game using wasm-opt (with debug symbols on)"
+depends = ['debug:build:tinygo', 'debug:build:opt']
+
+[tasks."debug:wasm2wat"]
+description = "Build the game and output the WAT"
+run = """
+    wasm2wat dist/ewfg.wasm --output=dist/ewfg.wat
+    wasm2wat dist/ewfg-opt.wasm --output=dist/ewfg-opt.wat
+"""
+depends = ['debug:build']
+sources = ['dist/ewfg.wasm', 'dist/ewfg-opt.wasm']
+outputs = ['dist/ewfg.wat', 'dist/ewfg-opt.wat']
+
+[tasks."debug:wasm-decompile"]
+description = "Build the game and decompile into the .dcmp pseudo-language"
+run = """
+    wasm-decompile dist/ewfg.wasm --output=dist/ewfg.dcmp
+    wasm-decompile dist/ewfg-opt.wasm --output=dist/ewfg-opt.dcmp
+"""
+depends = ['debug:build']
+sources = ['dist/ewfg.wasm', 'dist/ewfg-opt.wasm']
+outputs = ['dist/ewfg.dcmp', 'dist/ewfg-opt.dcmp']
 
 [tasks.start]
 description = "Run the game using firefly emulator"
